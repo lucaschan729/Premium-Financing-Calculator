@@ -4,84 +4,137 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>保費融資計算器｜多利率情境回報分析</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root{
       --navy:#0f2540; --navy2:#1b3a5f; --gold:#c9a24b; --gold2:#e8d3a0;
-      --bg:#f4f6fa; --card:#ffffff; --line:#e3e8f0; --text:#1c2733; --muted:#6b7a8c;
-      --pos:#0a8f5b; --neg:#d6453d;
+      --bg:#f3f5f9; --card:#ffffff; --line:#e3e8f0; --text:#1c2733; --muted:#6b7a8c;
+      --pos:#0a8f5b; --neg:#d6453d; --soft:#f6f8fc;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,"PingFang HK","Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-    header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:36px 20px 64px}
+    body{font-family:-apple-system,"PingFang HK","Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+    /* ---------- 頁首 ---------- */
+    header{background:radial-gradient(circle at 88% -30%,rgba(201,162,75,.38),transparent 46%),linear-gradient(135deg,#0b1c33,var(--navy2));color:#fff;padding:40px 20px 76px}
     header .inner,main{max-width:1180px;margin:0 auto}
-    header h1{font-size:28px;letter-spacing:1px}
-    header h1 span{color:var(--gold2)}
-    header p{color:#c5d2e3;margin-top:6px;font-size:14px}
-    main{padding:0 16px 40px;margin-top:-40px}
-    .card{background:var(--card);border-radius:14px;box-shadow:0 4px 18px rgba(15,37,64,.08);padding:22px;margin-bottom:20px}
-    .card h2{font-size:18px;display:flex;align-items:center;gap:10px;margin-bottom:16px;color:var(--navy)}
-    .card h3{font-size:14px;color:var(--muted);margin:18px 0 10px;font-weight:600}
-    .num{background:var(--gold);color:#fff;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-    .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
-    .seg{display:inline-flex;background:#eef1f6;border-radius:10px;padding:4px;flex-wrap:wrap}
-    .seg button{border:0;background:transparent;padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--muted);font-weight:600}
-    .seg button.on{background:var(--navy);color:#fff}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
-    input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;color:var(--text);background:#fff;font-variant-numeric:tabular-nums}
+    header h1{font-size:30px;letter-spacing:1px;font-weight:700}
+    header h1 span{color:var(--gold2);font-weight:400;font-size:.7em;margin-left:6px;letter-spacing:.5px}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .tags span{font-size:12px;color:#dbe4f0;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);padding:4px 12px;border-radius:99px}
+    main{padding:0 16px 40px;margin-top:-48px}
+
+    /* ---------- 卡片 ---------- */
+    .card{background:var(--card);border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.05),0 8px 24px rgba(15,37,64,.07);padding:26px;margin-bottom:22px}
+    .card h2{font-size:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;color:var(--navy);padding-bottom:14px;border-bottom:1px solid var(--line)}
+    .card h3{font-size:13px;color:var(--navy);margin:24px 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.5px}
+    .card h3::before{content:"";width:4px;height:14px;border-radius:2px;background:var(--gold)}
+    .card h3:first-of-type{margin-top:4px}
+    .num{background:linear-gradient(135deg,var(--gold),#b28a35);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(201,162,75,.4)}
+    .chip{font-size:12px;font-weight:600;color:var(--navy2);background:#eef2f8;padding:3px 12px;border-radius:99px;margin-left:auto}
+    .chip:empty{display:none}
+
+    /* ---------- 表單 ---------- */
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+    .seg{display:inline-flex;background:#eef1f6;border-radius:11px;padding:4px;flex-wrap:wrap;gap:2px}
+    .seg button{border:0;background:transparent;padding:8px 16px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+    .seg button:hover{color:var(--navy)}
+    .seg button.on{background:var(--navy);color:#fff;box-shadow:0 2px 6px rgba(15,37,64,.25)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;font-weight:500}
+    input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--text);background:#fff;font-variant-numeric:tabular-nums;font-family:inherit;transition:border-color .15s,box-shadow .15s}
     input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
-    input[type=checkbox]{width:auto;padding:0}
-    .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
-    .fx input{width:80px;padding:7px 9px}
-    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:18px}
-    .kpi{background:linear-gradient(135deg,#f8fafd,#eef2f8);border:1px solid var(--line);border-radius:12px;padding:14px}
-    .kpi small{color:var(--muted);font-size:12px;display:block}
-    .kpi b{font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums}
-    .kpi.hl{background:linear-gradient(135deg,var(--navy),var(--navy2));border:0}
+    input[type=checkbox]{width:16px;height:16px;padding:0;accent-color:var(--navy)}
+    .in{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s,box-shadow .15s;overflow:hidden}
+    .in:hover{border-color:#c9d3e2}
+    .in:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
+    .in input{border:0;flex:1;min-width:0;background:transparent;font-weight:600}
+    .in input:focus{box-shadow:none}
+    .in span{font-size:13px;color:var(--muted);padding:0 12px;background:var(--soft);align-self:stretch;display:flex;align-items:center;font-weight:600}
+    .in span.pre{border-right:1px solid var(--line)}
+    .in span.suf{border-left:1px solid var(--line)}
+    .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-left:auto}
+    .fx input{width:76px;padding:7px 9px;text-align:center}
+    .rate{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line);border-top:3px solid var(--c)}
+    .rate label{color:var(--c);font-weight:700}
+    .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+    .d0{background:#0a8f5b}.d1{background:#c9a24b}.d2{background:#d6453d}
+
+    /* ---------- KPI ---------- */
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:22px}
+    .kpi{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .kpi small{color:var(--muted);font-size:12px;display:block;margin-bottom:2px}
+    .kpi b{font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+    .kpi.hl{background:linear-gradient(135deg,#0b1c33,var(--navy2));border:0;box-shadow:0 6px 16px rgba(15,37,64,.25)}
     .kpi.hl small{color:#c5d2e3}.kpi.hl b{color:var(--gold2)}
-    .tip{background:#fff8e6;border-left:4px solid var(--gold);padding:10px 14px;border-radius:6px;font-size:13px;color:#6b5514;margin-bottom:14px}
-    .drop{border:2px dashed #c3cede;border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#f8fafd;margin-bottom:10px;transition:.15s}
-    .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0}
+
+    /* ---------- 上載 ---------- */
+    .tip{background:#fff8e6;border-left:4px solid var(--gold);padding:10px 14px;border-radius:8px;font-size:13px;color:#6b5514;margin-bottom:14px}
+    .drop{border:2px dashed #c3cede;border-radius:14px;padding:26px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
+    .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0;transform:translateY(-1px)}
+    .drop .ico{font-size:30px;display:block;margin-bottom:4px}
     .drop b{color:var(--navy);font-size:15px;display:block}
     .drop small{color:var(--muted);font-size:12px}
-    .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:10px}
-    .exopts label{display:flex;align-items:center;gap:6px;margin:0}
-    .exopts input[type=text]{width:64px;padding:6px 8px;text-align:center}
-    .status{font-size:13px;padding:10px 14px;border-radius:6px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
+    .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
+    .exopts label{display:flex;align-items:center;gap:6px;margin:0;cursor:pointer}
+    .exopts input[type=text]{width:60px;padding:6px 8px;text-align:center}
+    .status{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
     .status.err{background:#fdeeee;border-left-color:var(--neg);color:#8a2a25}
     .status:empty{display:none}
-    .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
-    table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
-    th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-    th{background:#f1f4f9;color:var(--navy);font-weight:600}
+
+    /* ---------- 表格 ---------- */
+    .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+    table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+    th,td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+    tbody tr:last-child td{border-bottom:0}
+    th{background:#f1f4f9;color:var(--navy);font-weight:700;font-size:13px}
+    .scroll thead th{position:sticky;top:0;z-index:2}
     th:first-child,td:first-child{text-align:center}
-    th.y{background:#fdf3c4}
-    tbody tr:hover{background:#fafbfd}
-    #svTable td{padding:4px 6px}
+    th.y{background:#fbf1cf;color:#6b5514}
+    tbody tr:hover td{background:#fafbfd}
+    .stick td:first-child{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--line)}
+    .stick thead th:first-child{left:0;z-index:3;border-right:1px solid var(--line)}
+    .stick tbody tr:hover td:first-child{background:#fafbfd}
+    .stick tr.sel td{background:#f1f6fd}
+    .stick tr.be td{background:#eefaf4}
+    #cmpTable td:first-child{text-align:left}
+    #cmpTable td:first-child b{display:inline-flex;align-items:center;gap:8px}
+    #svTable td{padding:3px 6px}
+    #svTable td:first-child{color:var(--muted);font-weight:600}
     #svTable input{border:1px solid transparent;text-align:right;padding:7px 8px;background:transparent}
     #svTable input:hover{border-color:var(--line)}
-    #svTable input:focus{background:#fff}
-    .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600}
-    .btn:hover{border-color:var(--gold);color:var(--gold)}
-    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+    #svTable input:focus{background:#fff;border-color:var(--gold)}
+    .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--pos);padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
+    .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600;transition:.15s;font-family:inherit}
+    .btn:hover{border-color:var(--gold);color:#a8842f;background:#fffaf0}
+    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);margin-left:auto}
+    .btn.primary:hover{background:var(--navy2);color:#fff}
     .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
     .sub{display:block;font-size:12px;font-weight:400;color:var(--muted)}
-    tr.sel td{background:#f3f7fd}
-    details{margin-top:16px}
-    summary{cursor:pointer;font-weight:600;color:var(--navy);padding:8px 0}
-    .chartbox{position:relative;height:340px}
-    .disc{font-size:12px;color:var(--muted);line-height:1.7}
-    footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 30px}
-    @media(max-width:600px){header h1{font-size:22px}.card{padding:16px}.chartbox{height:260px}}
-    @media print{header{padding:20px}.btn,.seg,.drop,.exopts{display:none}main{margin-top:0}}
+    details{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:4px 16px;background:var(--soft)}
+    details[open]{padding-bottom:16px}
+    summary{cursor:pointer;font-weight:600;color:var(--navy);padding:10px 0;font-size:14px}
+    details .scroll{background:#fff}
+    .disc{font-size:12.5px;color:var(--muted);line-height:1.9}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 30px}
+
+    @media(max-width:600px){
+      header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
+      .card{padding:18px}.fx{margin-left:0}.btn.primary{margin-left:0}
+      .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+      .kpi b{font-size:17px}th,td{padding:8px 10px}
+    }
+    @media print{
+      body{background:#fff}header{padding:20px;background:var(--navy)}main{margin-top:10px}
+      .btn,.drop,.exopts,.tip,.status,#curSeg,.fx,.tags{display:none}
+      .card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
+      .scroll{max-height:none!important;overflow:visible}
+    }
   </style>
   </head>
   <body>
   <header>
     <div class="inner">
-      <h1>保費融資計算器 <span>Premium Financing</span></h1>
-      <p>保費回贈 · 多利率情境 · 淨收益 · IRR · 建議書自動提取</p>
+      <h1>保費融資計算器<span>Premium Financing</span></h1>
+      <div class="tags"><span>保費回贈</span><span>多利率情境</span><span>淨收益</span><span>IRR</span><span>建議書自動提取</span></div>
     </div>
   </header>
 
@@ -94,24 +147,32 @@
           <button data-cur="USD" class="on">US$ 美元</button>
           <button data-cur="HKD">HK$ 港元</button>
         </div>
-        <div class="fx">匯率 USD:HKD <input id="fx" value="7.8"></div>
+        <div class="fx">匯率 USD:HKD <input id="fx" value="7.8" inputmode="decimal"></div>
       </div>
+
+      <h3>保單資料</h3>
       <div class="grid">
-        <div><label>總保費</label><input id="premium" class="money" value="5,000,000"></div>
-        <div><label>首日退保價值</label><input id="sv0" class="money" value="4,050,000"></div>
-        <div><label>借貸成數 LTV（%）</label><input id="ltv" value="90"></div>
-        <div><label>保費回贈（總保費 %）</label><input id="rebate" value="7"></div>
+        <div><label>總保費</label><div class="in"><span class="pre cs">US$</span><input id="premium" class="money" inputmode="decimal" value="5,000,000"></div></div>
+        <div><label>首日退保價值</label><div class="in"><span class="pre cs">US$</span><input id="sv0" class="money" inputmode="decimal" value="4,050,000"></div></div>
+        <div><label>保費回贈（總保費）</label><div class="in"><input id="rebate" inputmode="decimal" value="7"><span class="suf">%</span></div></div>
+        <div><label>分紅實現率</label><div class="in"><input id="div" inputmode="decimal" value="100"><span class="suf">%</span></div></div>
+      </div>
+
+      <h3>融資安排</h3>
+      <div class="grid">
         <div><label>貸款銀行</label><input id="bank" value="天星銀行"></div>
-        <div><label>每年手續費（貸款額 %）</label><input id="annualFee" value="0"></div>
-        <div><label>一次性手續費</label><input id="onceFee" class="money" value="0"></div>
-        <div><label>分紅實現率（%）</label><input id="div" value="100"></div>
+        <div><label>借貸成數 LTV</label><div class="in"><input id="ltv" inputmode="decimal" value="90"><span class="suf">%</span></div></div>
+        <div><label>每年手續費（貸款額）</label><div class="in"><input id="annualFee" inputmode="decimal" value="0"><span class="suf">%</span></div></div>
+        <div><label>一次性手續費</label><div class="in"><span class="pre cs">US$</span><input id="onceFee" class="money" inputmode="decimal" value="0"></div></div>
       </div>
-      <h3>貸款利率情境（%）</h3>
+
+      <h3>貸款利率情境</h3>
       <div class="grid">
-        <div><label>情境 A・低</label><input id="r1" value="1.5"></div>
-        <div><label>情境 B・中</label><input id="r2" value="3"></div>
-        <div><label>情境 C・高</label><input id="r3" value="5"></div>
+        <div class="rate" style="--c:#0a8f5b"><label>情境 A・低</label><div class="in"><input id="r1" inputmode="decimal" value="1.5"><span class="suf">%</span></div></div>
+        <div class="rate" style="--c:#b28a35"><label>情境 B・中</label><div class="in"><input id="r2" inputmode="decimal" value="3"><span class="suf">%</span></div></div>
+        <div class="rate" style="--c:#d6453d"><label>情境 C・高</label><div class="in"><input id="r3" inputmode="decimal" value="5"><span class="suf">%</span></div></div>
       </div>
+
       <div class="kpis">
         <div class="kpi"><small>貸款總額</small><b id="kLoan">-</b></div>
         <div class="kpi"><small>自付總額</small><b id="kSelf">-</b></div>
@@ -123,15 +184,16 @@
 
     <!-- 2 現金價值 -->
     <section class="card">
-      <h2><span class="num">2</span>逐年現金價值（由保單建議書填入）</h2>
+      <h2><span class="num">2</span>逐年現金價值</h2>
 
       <div class="drop" id="drop">
-        <b>📄 上載保單建議書，自動提取現金價值</b>
+        <span class="ico">📄</span>
+        <b>上載保單建議書，自動提取現金價值</b>
         <small>撳呢度揀檔案，或者直接拖放入嚟 ・ 支援 PDF / Excel / CSV / TXT ・ 檔案只喺你部機內解析</small>
         <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" hidden>
       </div>
       <div class="exopts">
-        <label>只匯入至第 <input type="text" id="exLimit" value="30"> 年</label>
+        <label>只匯入至第 <input type="text" id="exLimit" value="30" inputmode="numeric"> 年</label>
         <label><input type="checkbox" id="exSet" checked> 同時更新「總保費」及「首日退保價值」</label>
       </div>
       <div class="status" id="exStatus"></div>
@@ -145,7 +207,7 @@
       </div>
       <div class="scroll" style="max-height:420px">
         <table id="svTable">
-          <thead><tr><th style="width:80px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
+          <thead><tr><th style="width:90px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -153,8 +215,8 @@
 
     <!-- 3 利率比較 -->
     <section class="card">
-      <h2><span class="num">3</span>利率情境比較<span class="sub" id="bankLabel"></span></h2>
-      <div class="scroll"><table id="cmpTable"></table></div>
+      <h2><span class="num">3</span>利率情境比較<span class="chip" id="bankLabel"></span></h2>
+      <div class="scroll stick"><table id="cmpTable"></table></div>
     </section>
 
     <!-- 4 明細 -->
@@ -164,13 +226,13 @@
         <div class="seg" id="scSeg"></div>
         <button class="btn primary" onclick="window.print()">列印 / 存 PDF</button>
       </div>
-      <div class="kpis" style="margin:0 0 16px">
+      <div class="kpis" style="margin:0 0 18px">
         <div class="kpi"><small>年利息</small><b id="rYear">-</b></div>
         <div class="kpi"><small>月利息</small><b id="rMonth">-</b></div>
         <div class="kpi hl"><small>最早回本（已填年份中）</small><b id="rBE">-</b></div>
         <div class="kpi"><small>最後一年 IRR</small><b id="rIrr">-</b></div>
       </div>
-      <div class="scroll">
+      <div class="scroll stick" style="max-height:560px">
         <table id="resTable">
           <thead><tr>
             <th>保單年度</th><th>總現金價值</th><th>貸款總額</th><th>貸款總利息</th><th>還款後剩餘現金價值</th><th class="y">淨收益</th><th class="y">淨收益%</th><th>IRR</th>
@@ -180,14 +242,8 @@
       </div>
       <details>
         <summary>展開逐年現金流明細（每欄 = 喺該年退保）</summary>
-        <div class="scroll"><table id="cfTable"></table></div>
+        <div class="scroll stick" style="max-height:560px"><table id="cfTable"></table></div>
       </details>
-    </section>
-
-    <!-- 5 圖表 -->
-    <section class="card">
-      <h2><span class="num">5</span>各利率情境淨收益走勢</h2>
-      <div class="chartbox"><canvas id="chart"></canvas></div>
     </section>
 
     <section class="card">
@@ -209,7 +265,7 @@
   const $ = id => document.getElementById(id);
   // 示例（美元）：[保證, 總現金價值]，只填第 5、10 年
   const SAMPLE = [[],[],[],[],[null,5940000],[],[],[],[],[null,8185000]];
-  let cur = 'USD', scenario = 0, chart = null;
+  let cur = 'USD', scenario = 0;
 
   const num = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? null : n; };
   const sym = () => cur === 'HKD' ? 'HK$' : 'US$';
@@ -455,9 +511,9 @@
       fee:(num($('annualFee').value)||0)/100, div:(num($('div').value)??100)/100,
       rates:['r1','r2','r3'].map(id=>(num($(id).value)||0)/100)};
   }
-  function calc(b, r){
+  function calc(b, r, rows){
     const pay = b.loan*(r+b.fee);
-    return getRows().map((row,i)=>{
+    return rows.map((row,i)=>{
       const n=i+1;
       if(row.e==null && row.g==null) return {n, empty:true};
       const total = row.e ?? row.g, g = row.g ?? total;
@@ -472,8 +528,10 @@
 
   /* ---------- 輸出 ---------- */
   function update(){
-    const b = base();
+    const b = base(), rows = getRows();
     const names = ['A','B','C'].map((l,i)=>'情境 '+l+'・'+(b.rates[i]*100).toFixed(2)+'%');
+    const dot = i => '<i class="dot d'+i+'"></i>';
+    document.querySelectorAll('.cs').forEach(e=> e.textContent = sym());
     $('kLoan').textContent = money(b.loan);
     $('kSelf').textContent = money(b.self);
     $('kRebate').textContent = money(b.rebate);
@@ -482,20 +540,20 @@
     const bank = $('bank').value.trim();
     $('bankLabel').textContent = bank ? '貸款銀行：'+bank : '';
 
-    const all = b.rates.map(r=>calc(b,r).filter(x=>!x.empty));
+    const all = b.rates.map(r=>calc(b,r,rows).filter(x=>!x.empty));
     const years = all[0].map(x=>x.n);
 
     // 利率比較表
     let c = '<thead><tr><th>利率情境</th><th>年利息</th><th>月利息</th>'+years.map(y=>'<th class="y">第'+y+'年淨收益</th>').join('')+'</tr></thead><tbody>';
     b.rates.forEach((r,i)=>{
       const pay=b.loan*(r+b.fee);
-      c += '<tr class="'+(i===scenario?'sel':'')+'"><td><b>'+esc(names[i])+'</b></td><td>'+money(pay)+'</td><td>'+money(pay/12)+'</td>'+
+      c += '<tr class="'+(i===scenario?'sel':'')+'"><td><b>'+dot(i)+esc(names[i])+'</b></td><td>'+money(pay)+'</td><td>'+money(pay/12)+'</td>'+
         all[i].map(x=>'<td class="'+cls(x.net)+'">'+money(x.net)+'<span class="sub">'+pct(x.roi)+'</span></td>').join('')+'</tr>';
     });
     $('cmpTable').innerHTML = c+'</tbody>';
 
     // 情境按鈕
-    $('scSeg').innerHTML = names.map((s,i)=>'<button class="'+(i===scenario?'on':'')+'" data-i="'+i+'">'+esc(s)+'</button>').join('');
+    $('scSeg').innerHTML = names.map((s,i)=>'<button class="'+(i===scenario?'on':'')+'" data-i="'+i+'">'+dot(i)+esc(s)+'</button>').join('');
 
     const valid = all[scenario], pay = b.loan*(b.rates[scenario]+b.fee);
     const be = valid.find(r=>r.net>=0), last = valid[valid.length-1];
@@ -505,9 +563,9 @@
     $('rIrr').textContent = last? pct(last.irr):'—';
 
     document.querySelector('#resTable tbody').innerHTML = valid.length ? valid.map(r=>
-      '<tr><td>'+r.n+'</td><td>'+money(r.sv)+'</td><td>'+money(b.loan)+'</td><td>'+money(r.interest)+'</td><td>'+money(r.remain)+
+      '<tr class="'+(r===be?'be':'')+'"><td>'+r.n+(r===be?'<span class="badge">回本</span>':'')+'</td><td>'+money(r.sv)+'</td><td>'+money(b.loan)+'</td><td>'+money(r.interest)+'</td><td>'+money(r.remain)+
       '</td><td class="'+cls(r.net)+'">'+money(r.net)+'</td><td class="'+cls(r.roi)+'">'+pct(r.roi)+'</td><td class="'+cls(r.irr)+'">'+pct(r.irr)+'</td></tr>'
-    ).join('') : '<tr><td colspan="8" style="text-align:center;color:#9aa7b6">請先喺第 2 部分填入現金價值</td></tr>';
+    ).join('') : '<tr><td colspan="8" style="text-align:center;color:#9aa7b6;padding:28px">請先喺第 2 部分填入現金價值</td></tr>';
 
     // 現金流明細
     let h = '<thead><tr><th>現金流／退保年</th>'+valid.map(r=>'<th>第'+r.n+'年</th>').join('')+'</tr></thead><tbody>';
@@ -519,34 +577,10 @@
     }
     h += '<tr><td><b>淨收益</b></td>'+valid.map(r=>'<td class="'+cls(r.net)+'">'+money(r.net)+'</td>').join('')+'</tr></tbody>';
     $('cfTable').innerHTML = h;
-
-    drawChart(b, names);
-  }
-
-  function drawChart(b, names){
-    if(!window.Chart) return;
-    const colors=['#0a8f5b','#c9a24b','#d6453d'];
-    const n = tbody.rows.length;
-    const data = {
-      labels: Array.from({length:n},(_,i)=>'第'+(i+1)+'年'),
-      datasets: b.rates.map((r,i)=>({
-        label:names[i], data: calc(b,r).map(x=>x.empty?null:Math.round(x.net)),
-        borderColor:colors[i], backgroundColor:colors[i], tension:.2, borderWidth:i===scenario?3.5:2,
-        borderDash:i===scenario?[]:[5,4], pointRadius:i===scenario?5:3, spanGaps:true
-      }))
-    };
-    const opt = {
-      responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-      plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>c.dataset.label+'：'+money(c.parsed.y)}}},
-      scales:{y:{ticks:{callback:v=> (v<0?'-':'')+sym()+(Math.abs(v)>=1e6?(Math.abs(v)/1e6).toFixed(1)+'M':Math.abs(v)>=1e3?(Math.abs(v)/1e3).toFixed(0)+'K':Math.abs(v))},
-                 grid:{color:c=>c.tick.value===0?'#8894a3':'#edf0f5'}}, x:{grid:{display:false}}}
-    };
-    if(chart){ chart.data=data; chart.options=opt; chart.update(); }
-    else chart = new Chart($('chart'),{type:'line',data,options:opt});
   }
 
   /* ---------- 事件 ---------- */
-  $('scSeg').addEventListener('click', e=>{ if(e.target.dataset.i!==undefined){ scenario=+e.target.dataset.i; update(); }});
+  $('scSeg').addEventListener('click', e=>{ const t = e.target.closest('button'); if(t){ scenario=+t.dataset.i; update(); }});
   $('curSeg').addEventListener('click', e=>{
     const c = e.target.dataset.cur; if(!c || c===cur) return;
     const fx = num($('fx').value)||7.8, k = c==='USD' ? 1/fx : fx;   // 切換貨幣時自動換算金額
@@ -554,7 +588,7 @@
     cur=c; [...$('curSeg').children].forEach(b=>b.classList.toggle('on', b.dataset.cur===c));
     update();
   });
-  document.addEventListener('input', e=>{ if(e.target.tagName==='INPUT') update(); });
+  document.addEventListener('input', e=>{ if(e.target.tagName==='INPUT' && e.target.type!=='file') update(); });
   document.addEventListener('focusout', e=>{
     if(e.target.classList && e.target.classList.contains('money')){ const n=num(e.target.value); e.target.value = fmtIn(n); }
   });
