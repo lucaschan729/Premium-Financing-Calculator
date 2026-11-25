@@ -25,10 +25,18 @@
     .card h2{font-size:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;color:var(--navy);padding-bottom:14px;border-bottom:1px solid var(--line)}
     .card h3{font-size:13px;color:var(--navy);margin:24px 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.5px}
     .card h3::before{content:"";width:4px;height:14px;border-radius:2px;background:var(--gold)}
-    .card h3:first-of-type{margin-top:4px}
     .num{background:linear-gradient(135deg,var(--gold),#b28a35);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(201,162,75,.4)}
     .chip{font-size:12px;font-weight:600;color:var(--navy2);background:#eef2f8;padding:3px 12px;border-radius:99px;margin-left:auto}
     .chip:empty{display:none}
+
+    /* ---------- 步驟 ---------- */
+    .step{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:30px 0 14px;padding-top:22px;border-top:1px dashed var(--line)}
+    .step.first{margin-top:0;padding-top:0;border-top:0}
+    .step .tag{font-size:11.5px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--navy);padding:3px 10px;border-radius:99px}
+    .step b{font-size:15.5px;color:var(--navy)}
+    .step small{font-size:12.5px;color:var(--muted)}
+    .step .fx,.step .seg{margin-left:auto}
+    .step .seg+.fx{margin-left:0}
 
     /* ---------- 表單 ---------- */
     .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
@@ -52,7 +60,7 @@
     .in span.suf{border-left:1px solid var(--line)}
     .calc{display:block;font-size:12.5px;color:#a8842f;font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums}
     .calc:empty{display:none}
-    .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-left:auto}
+    .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
     .fx input{width:76px;padding:7px 9px;text-align:center}
     .rate{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line);border-top:3px solid var(--c)}
     .rate label{color:var(--c);font-weight:700}
@@ -70,16 +78,23 @@
     /* ---------- 上載 ---------- */
     .drop{border:2px dashed #c3cede;border-radius:14px;padding:26px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
     .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0;transform:translateY(-1px)}
+    .drop.done{border-style:solid;border-color:#9fd6bd;background:#f1faf5;padding:16px 20px}
     .drop .ico{font-size:30px;display:block;margin-bottom:4px}
+    .drop.done .ico{font-size:22px}
     .drop b{color:var(--navy);font-size:15px;display:block}
     .drop small{color:var(--muted);font-size:12px}
     .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
     .exopts label{display:flex;align-items:center;gap:6px;margin:0;cursor:pointer}
     .exopts input[type=text]{width:60px;padding:6px 8px;text-align:center}
-    .exopts .btn{margin-left:auto}
     .status{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
     .status.err{background:#fdeeee;border-left-color:var(--neg);color:#8a2a25}
     .status:empty{display:none}
+
+    /* ---------- 保單資料 + 現金價值（左右並排） ---------- */
+    .split{display:grid;grid-template-columns:minmax(260px,1fr) minmax(340px,1.5fr);gap:22px;align-items:start}
+    .split .grid{grid-template-columns:1fr}
+    .split h3{margin-top:0}
+    .split h3 .btn{margin-left:auto;padding:5px 12px;font-size:12px}
 
     /* ---------- 表格 ---------- */
     .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
@@ -177,9 +192,13 @@
     #report li::before{content:"•";position:absolute;left:0;color:var(--gold)}
     #report .rp-foot{margin-top:14px;padding-top:8px;border-top:1px solid var(--line);font-size:8pt;color:var(--muted);line-height:1.6}
 
+    @media(max-width:820px){
+      .split{grid-template-columns:1fr}
+      .split .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+    }
     @media(max-width:600px){
       header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
-      .card{padding:18px}.fx{margin-left:0}.exopts .btn{margin-left:0}
+      .card{padding:18px}.step .seg{margin-left:0}
       .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
       .kpi b{font-size:17px}th,td{padding:8px 10px}
     }
@@ -205,35 +224,69 @@
   </header>
 
   <main>
-    <!-- 1 設定 -->
+    <!-- 1 保單、現金價值與融資設定（合併） -->
     <section class="card">
       <h2><span class="num">1</span>保單與融資設定</h2>
-      <div class="toolbar">
+
+      <!-- 第一步：上載 -->
+      <div class="step first">
+        <span class="tag">第一步</span><b>上載保單建議書</b>
+        <small>選填・自動填寫總保費、首日退保價值及逐年現金價值；亦可略過，直接在下方手動輸入</small>
+      </div>
+      <div class="drop" id="drop">
+        <span class="ico" id="dropIco">📄</span>
+        <b id="dropTitle">點擊此處選擇檔案，或直接將檔案拖放至此</b>
+        <small>支援 PDF / Excel / CSV / TXT ・ 檔案只會在您的裝置內解析，不會上傳</small>
+        <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" hidden>
+      </div>
+      <div class="exopts">
+        <label>只匯入至第 <input type="text" id="exLimit" value="10" inputmode="numeric"> 年</label>
+        <label><input type="checkbox" id="exSet" checked> 同時更新「總保費」及「首日退保價值」</label>
+      </div>
+      <div class="status" id="exStatus"></div>
+
+      <!-- 第二步：保單資料 + 現金價值 -->
+      <div class="step">
+        <span class="tag">第二步</span><b>核對保單資料及現金價值</b>
         <div class="seg" id="curSeg">
           <button data-cur="USD" class="on">US$ 美元</button>
           <button data-cur="HKD">HK$ 港元</button>
         </div>
         <div class="fx">匯率 USD:HKD <input id="fx" value="7.8" inputmode="decimal"></div>
       </div>
-
-      <h3>保單資料</h3>
-      <div class="grid">
-        <div><label>總保費</label><div class="in"><span class="pre cs">US$</span><input id="premium" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
-        <div><label>首日退保價值</label><div class="in"><span class="pre cs">US$</span><input id="sv0" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
-        <div><label>保費回贈（總保費）</label><div class="in"><input id="rebate" inputmode="decimal" placeholder="留空 = 沒有回贈"><span class="suf">%</span></div><span class="calc" id="rebateAmt"></span></div>
-        <div><label>分紅實現率</label><div class="in"><input id="div" inputmode="decimal" placeholder="留空 = 100%"><span class="suf">%</span></div></div>
+      <div class="split">
+        <div>
+          <h3>保單資料</h3>
+          <div class="grid">
+            <div><label>總保費</label><div class="in"><span class="pre cs">US$</span><input id="premium" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
+            <div><label>首日退保價值</label><div class="in"><span class="pre cs">US$</span><input id="sv0" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
+            <div><label>保費回贈（總保費）</label><div class="in"><input id="rebate" inputmode="decimal" placeholder="留空 = 沒有回贈"><span class="suf">%</span></div><span class="calc" id="rebateAmt"></span></div>
+            <div><label>分紅實現率</label><div class="in"><input id="div" inputmode="decimal" placeholder="留空 = 100%"><span class="suf">%</span></div></div>
+          </div>
+        </div>
+        <div>
+          <h3>逐年現金價值<button class="btn" id="clearRows">清空表格</button></h3>
+          <div class="scroll" style="max-height:372px">
+            <table id="svTable">
+              <thead><tr><th style="width:80px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="note" style="margin-top:8px">可直接輸入，或從 Excel 複製多行後貼上；只需填寫需要分析的年份。</p>
+        </div>
       </div>
 
-      <h3>融資安排</h3>
+      <!-- 第三步：融資 -->
+      <div class="step">
+        <span class="tag">第三步</span><b>融資安排及利率情境</b>
+      </div>
       <div class="grid">
         <div><label>貸款銀行</label><input id="bank" placeholder="選填"></div>
         <div><label>借貸成數 LTV</label><div class="in"><input id="ltv" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
         <div><label>每年手續費（貸款額）</label><div class="in"><input id="annualFee" inputmode="decimal" placeholder="留空 = 無"><span class="suf">%</span></div></div>
         <div><label>一次性手續費</label><div class="in"><span class="pre cs">US$</span><input id="onceFee" class="money" inputmode="decimal" placeholder="留空 = 無"></div></div>
       </div>
-
-      <h3>貸款利率情境</h3>
-      <div class="grid">
+      <div class="grid" style="margin-top:16px">
         <div class="rate" style="--c:#0a8f5b"><label>情境 A・低</label><div class="in"><input id="r1" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
         <div class="rate" style="--c:#b28a35"><label>情境 B・中</label><div class="in"><input id="r2" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
         <div class="rate" style="--c:#d6453d"><label>情境 C・高</label><div class="in"><input id="r3" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
@@ -248,40 +301,15 @@
       </div>
     </section>
 
-    <!-- 2 現金價值 -->
+    <!-- 2 利率比較 -->
     <section class="card">
-      <h2><span class="num">2</span>逐年現金價值</h2>
-
-      <div class="drop" id="drop">
-        <span class="ico">📄</span>
-        <b>上載保單建議書，自動提取現金價值</b>
-        <small>點擊此處選擇檔案，或直接將檔案拖放至此 ・ 支援 PDF / Excel / CSV / TXT ・ 檔案只會在您的裝置內解析</small>
-        <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" hidden>
-      </div>
-      <div class="exopts">
-        <label>只匯入至第 <input type="text" id="exLimit" value="10" inputmode="numeric"> 年</label>
-        <label><input type="checkbox" id="exSet" checked> 同時更新「總保費」及「首日退保價值」</label>
-        <button class="btn" id="clearRows">清空表格</button>
-      </div>
-      <div class="status" id="exStatus"></div>
-
-      <div class="scroll" style="max-height:420px">
-        <table id="svTable">
-          <thead><tr><th style="width:90px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- 3 利率比較 -->
-    <section class="card">
-      <h2><span class="num">3</span>利率情境比較<span class="chip" id="bankLabel"></span></h2>
+      <h2><span class="num">2</span>利率情境比較<span class="chip" id="bankLabel"></span></h2>
       <div class="scroll stick"><table id="cmpTable"></table></div>
     </section>
 
-    <!-- 4 明細 -->
+    <!-- 3 明細 -->
     <section class="card">
-      <h2><span class="num">4</span>逐年回報明細</h2>
+      <h2><span class="num">3</span>逐年回報明細</h2>
       <div class="toolbar">
         <div class="seg" id="scSeg"></div>
       </div>
@@ -305,9 +333,9 @@
       </details>
     </section>
 
-    <!-- 5 匯出 -->
+    <!-- 4 匯出 -->
     <section class="card">
-      <h2><span class="num">5</span>匯出客戶報告</h2>
+      <h2><span class="num">4</span>匯出客戶報告</h2>
       <div class="toolbar" style="margin:0">
         <button class="btn primary" id="exportPdf">預覽及匯出 PDF 報告</button>
         <span class="note">按下後會先顯示報告預覽，確認內容後再按「列印 / 儲存為 PDF」。</span>
@@ -323,10 +351,6 @@
         ・年利息 = 貸款總額 ×（貸款利率 + 每年手續費）；月利息 = 年利息 ÷ 12；貸款總利息 = 年利息 × 年數（只償還利息，退保時清還本金）。<br>
         ・還款後剩餘現金價值 = 總現金價值 − 貸款總額 − 貸款總利息；淨收益 = 剩餘現金價值 − 實付總額；淨收益% = 淨收益 ÷ 實付總額。<br>
         ・IRR 以年度現金流計算：第 0 年實付、其後每年支付利息、退保年取回（現金價值 − 貸款 − 當年利息）。<br>
-        ・留空處理：保費回贈、每年手續費、一次性手續費留空時視為 0；分紅實現率留空時視為 100%；未填寫利率的情境不會計算。<br>
-        ・現金價值表：只需填寫需要分析的年份，其餘可留空；「保證現金價值」留空時，分紅實現率不會影響該年結果。<br>
-        ・檔案提取：程式會在每一行尋找「保證金額 + 非保證金額 = 總額」的組合，並取退保發還金額一組；悲觀／樂觀情景頁會略過。自動提取可能出錯，請務必與建議書原文核對。<br>
-        ・本工具只供教育及參考用途，並不構成任何保險、投資或借貸建議。利率、現金價值、分紅及回贈並非保證，請以保險公司及銀行文件為準，並向持牌顧問查詢。
       </div>
     </section>
     <footer>保費融資計算器 · 所有計算及檔案解析均在您的瀏覽器內完成，不會上傳任何資料</footer>
@@ -352,6 +376,8 @@
   const fmtIn = v => v == null ? '' : Math.round(v).toLocaleString('en-US');
   const cls = v => v == null ? '' : v >= 0 ? 'pos' : 'neg';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // 設定貨幣（不作換算）
+  function setCur(c){ cur = c; [...$('curSeg').children].forEach(b=>b.classList.toggle('on', b.dataset.cur===c)); }
 
   /* ---------- 現金價值表 ---------- */
   const tbody = document.querySelector('#svTable tbody');
@@ -532,7 +558,7 @@
       const isPdf = ext==='pdf' || file.type==='application/pdf';
       const pages = isPdf ? await readPdf(file) : /^(xlsx|xls|csv)$/.test(ext) ? await readSheet(file) : readText(await file.text());
       const res = extract(pages, isPdf);
-      if(!res.map.size) throw new Error('找不到現金價值表。如屬掃描版（圖片）PDF 或版面特殊，請改以手動輸入或從 Excel 貼上。');
+      if(!res.map.size) throw new Error('找不到現金價值表。如屬掃描版（圖片）PDF 或版面特殊，請在下方手動輸入或從 Excel 貼上。');
 
       const limit = Math.max(1, Math.round(num($('exLimit').value)||10));
       const maxY = Math.min(limit, res.years[res.years.length-1]);
@@ -549,10 +575,13 @@
       }
       const cm = res.text.match(/保單貨幣[:：]?\s*(美元|港元|港幣)/);
       if(cm){ const fc = cm[1]==='美元' ? 'USD' : 'HKD';
-        if(fc!==cur) msg += '\n⚠️ 檔案貨幣為'+cm[1]+'，但目前選擇的是 '+sym()+'；數字未經換算，請在第 1 部分選擇正確貨幣。'; }
+        if(fc!==cur){ setCur(fc); msg += '\n・檔案貨幣為'+cm[1]+'，已自動切換貨幣（其他已輸入的金額未經換算）。'; } }
       if(res.skipped) msg += '\n・有 '+res.skipped+' 行以年齡標示而未能換算為保單年度，已略過。';
-      msg += '\n請與建議書原文核對數字。';
+      msg += '\n請在第二步與建議書原文核對數字，然後於第三步填寫融資安排。';
       st.textContent = msg;
+      $('drop').classList.add('done');
+      $('dropIco').textContent = '✅';
+      $('dropTitle').textContent = '已載入：'+file.name+'（點擊或拖放可重新上載）';
       update();
     }catch(err){
       st.className = 'status err';
@@ -604,7 +633,7 @@
 
   /* ---------- 輸出 ---------- */
   const MSG1 = '請先在第 1 部分填寫總保費、首日退保價值及借貸成數';
-  const MSG2 = '請先在第 2 部分填寫現金價值';
+  const MSG2 = '請先在第 1 部分上載建議書或填寫逐年現金價值';
   const MSG3 = '請先在第 1 部分填寫此情境的貸款利率';
   const MSG4 = '請先在第 1 部分填寫最少一個貸款利率情境';
 
@@ -780,9 +809,9 @@
   $('scSeg').addEventListener('click', e=>{ const t = e.target.closest('button'); if(t){ scenario=+t.dataset.i; update(); }});
   $('curSeg').addEventListener('click', e=>{
     const c = e.target.dataset.cur; if(!c || c===cur) return;
-    const fx = num($('fx').value)||7.8, k = c==='USD' ? 1/fx : fx;   // 切換貨幣時自動換算金額
+    const fx = num($('fx').value)||7.8, k = c==='USD' ? 1/fx : fx;   // 手動切換貨幣時自動換算金額
     document.querySelectorAll('input.money').forEach(i=>{ const n=num(i.value); if(n!=null) i.value=fmtIn(n*k); });
-    cur=c; [...$('curSeg').children].forEach(b=>b.classList.toggle('on', b.dataset.cur===c));
+    setCur(c);
     update();
   });
   document.addEventListener('input', e=>{ if(e.target.tagName==='INPUT' && e.target.type!=='file') update(); });
