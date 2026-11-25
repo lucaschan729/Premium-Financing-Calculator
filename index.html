@@ -1,5 +1,494 @@
   <!DOCTYPE html>
+  <html lang="zh-HK">id: premium-financing-calculator
+name: 保費融資計算器（無預設數字）
+type: html
+content: |-
+  <!DOCTYPE html>
   <html lang="zh-HK">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>保費融資計算器｜多利率情境回報分析</title>
+  <style>
+    :root{
+      --navy:#0f2540; --navy2:#1b3a5f; --gold:#c9a24b; --gold2:#e8d3a0;
+      --bg:#f3f5f9; --card:#ffffff; --line:#e3e8f0; --text:#1c2733; --muted:#6b7a8c;
+      --pos:#0a8f5b; --neg:#d6453d; --soft:#f6f8fc;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,"PingFang HK","Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+    /* ---------- 頁首 ---------- */
+    header{background:radial-gradient(circle at 88% -30%,rgba(201,162,75,.38),transparent 46%),linear-gradient(135deg,#0b1c33,var(--navy2));color:#fff;padding:40px 20px 76px}
+    header .inner,main{max-width:1180px;margin:0 auto}
+    header h1{font-size:30px;letter-spacing:1px;font-weight:700}
+    header h1 span{color:var(--gold2);font-weight:400;font-size:.7em;margin-left:6px;letter-spacing:.5px}
+    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .tags span{font-size:12px;color:#dbe4f0;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);padding:4px 12px;border-radius:99px}
+    main{padding:0 16px 40px;margin-top:-48px}
+
+    /* ---------- 卡片 ---------- */
+    .card{background:var(--card);border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.05),0 8px 24px rgba(15,37,64,.07);padding:26px;margin-bottom:22px}
+    .card h2{font-size:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;color:var(--navy);padding-bottom:14px;border-bottom:1px solid var(--line)}
+    .card h3{font-size:13px;color:var(--navy);margin:24px 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.5px}
+    .card h3::before{content:"";width:4px;height:14px;border-radius:2px;background:var(--gold)}
+    .card h3:first-of-type{margin-top:4px}
+    .num{background:linear-gradient(135deg,var(--gold),#b28a35);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(201,162,75,.4)}
+    .chip{font-size:12px;font-weight:600;color:var(--navy2);background:#eef2f8;padding:3px 12px;border-radius:99px;margin-left:auto}
+    .chip:empty{display:none}
+
+    /* ---------- 表單 ---------- */
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+    .seg{display:inline-flex;background:#eef1f6;border-radius:11px;padding:4px;flex-wrap:wrap;gap:2px}
+    .seg button{border:0;background:transparent;padding:8px 16px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+    .seg button:hover{color:var(--navy)}
+    .seg button.on{background:var(--navy);color:#fff;box-shadow:0 2px 6px rgba(15,37,64,.25)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;font-weight:500}
+    input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--text);background:#fff;font-variant-numeric:tabular-nums;font-family:inherit;transition:border-color .15s,box-shadow .15s}
+    input::placeholder{color:#b3bdca;font-weight:400;font-size:13px}
+    input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
+    input[type=checkbox]{width:16px;height:16px;padding:0;accent-color:var(--navy)}
+    .in{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s,box-shadow .15s;overflow:hidden}
+    .in:hover{border-color:#c9d3e2}
+    .in:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
+    .in input{border:0;flex:1;min-width:0;background:transparent;font-weight:600}
+    .in input:focus{box-shadow:none}
+    .in span{font-size:13px;color:var(--muted);padding:0 12px;background:var(--soft);align-self:stretch;display:flex;align-items:center;font-weight:600}
+    .in span.pre{border-right:1px solid var(--line)}
+    .in span.suf{border-left:1px solid var(--line)}
+    .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-left:auto}
+    .fx input{width:76px;padding:7px 9px;text-align:center}
+    .rate{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line);border-top:3px solid var(--c)}
+    .rate label{color:var(--c);font-weight:700}
+    .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+    .d0{background:#0a8f5b}.d1{background:#c9a24b}.d2{background:#d6453d}
+
+    /* ---------- KPI ---------- */
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:22px}
+    .kpi{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .kpi small{color:var(--muted);font-size:12px;display:block;margin-bottom:2px}
+    .kpi b{font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+    .kpi.hl{background:linear-gradient(135deg,#0b1c33,var(--navy2));border:0;box-shadow:0 6px 16px rgba(15,37,64,.25)}
+    .kpi.hl small{color:#c5d2e3}.kpi.hl b{color:var(--gold2)}
+
+    /* ---------- 上載 ---------- */
+    .tip{background:#fff8e6;border-left:4px solid var(--gold);padding:10px 14px;border-radius:8px;font-size:13px;color:#6b5514;margin-bottom:14px}
+    .drop{border:2px dashed #c3cede;border-radius:14px;padding:26px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
+    .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0;transform:translateY(-1px)}
+    .drop .ico{font-size:30px;display:block;margin-bottom:4px}
+    .drop b{color:var(--navy);font-size:15px;display:block}
+    .drop small{color:var(--muted);font-size:12px}
+    .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
+    .exopts label{display:flex;align-items:center;gap:6px;margin:0;cursor:pointer}
+    .exopts input[type=text]{width:60px;padding:6px 8px;text-align:center}
+    .status{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
+    .status.err{background:#fdeeee;border-left-color:var(--neg);color:#8a2a25}
+    .status:empty{display:none}
+
+    /* ---------- 表格 ---------- */
+    .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+    table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+    th,td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+    tbody tr:last-child td{border-bottom:0}
+    th{background:#f1f4f9;color:var(--navy);font-weight:700;font-size:13px}
+    .scroll thead th{position:sticky;top:0;z-index:2}
+    th:first-child,td:first-child{text-align:center}
+    th.y{background:#fbf1cf;color:#6b5514}
+    tbody tr:hover td{background:#fafbfd}
+    .stick td:first-child{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--line)}
+    .stick thead th:first-child{left:0;z-index:3;border-right:1px solid var(--line)}
+    .stick tbody tr:hover td:first-child{background:#fafbfd}
+    .stick tr.sel td{background:#f1f6fd}
+    .stick tr.be td{background:#eefaf4}
+    #cmpTable td:first-child{text-align:left}
+    #cmpTable td:first-child b{display:inline-flex;align-items:center;gap:8px}
+    .stick td.hint,#cmpTable td.hint{text-align:center;color:#9aa7b6;padding:28px;border-right:0;position:static}
+    #svTable td{padding:3px 6px}
+    #svTable td:first-child{color:var(--muted);font-weight:600}
+    #svTable input{border:1px solid transparent;text-align:right;padding:7px 8px;background:transparent}
+    #svTable input:hover{border-color:var(--line)}
+    #svTable input:focus{background:#fff;border-color:var(--gold)}
+    .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--pos);padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
+    .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600;transition:.15s;font-family:inherit}
+    .btn:hover{border-color:var(--gold);color:#a8842f;background:#fffaf0}
+    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);margin-left:auto}
+    .btn.primary:hover{background:var(--navy2);color:#fff}
+    .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+    .sub{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+    details{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:4px 16px;background:var(--soft)}
+    details[open]{padding-bottom:16px}
+    summary{cursor:pointer;font-weight:600;color:var(--navy);padding:10px 0;font-size:14px}
+    details .scroll{background:#fff}
+    .disc{font-size:12.5px;color:var(--muted);line-height:1.9}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 30px}
+
+    @media(max-width:600px){
+      header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
+      .card{padding:18px}.fx{margin-left:0}.btn.primary{margin-left:0}
+      .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+      .kpi b{font-size:17px}th,td{padding:8px 10px}
+    }
+    @media print{
+      body{background:#fff}header{padding:20px;background:var(--navy)}main{margin-top:10px}
+      .btn,.drop,.exopts,.tip,.status,#curSeg,.fx,.tags{display:none}
+      .card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
+      .scroll{max-height:none!important;overflow:visible}
+    }
+  </style>
+  </head>
+  <body>
+  <header>
+    <div class="inner">
+      <h1>保費融資計算器<span>Premium Financing</span></h1>
+      <div class="tags"><span>保費回贈</span><span>多利率情境</span><span>淨收益</span><span>IRR</span><span>建議書自動提取</span></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1 設定 -->
+    <section class="card">
+      <h2><span class="num">1</span>保單與融資設定</h2>
+      <div class="toolbar">
+        <div class="seg" id="curSeg">
+          <button data-cur="USD" class="on">US$ 美元</button>
+          <button data-cur="HKD">HK$ 港元</button>
+        </div>
+        <div class="fx">匯率 USD:HKD <input id="fx" value="7.8" inputmode="decimal"></div>
+      </div>
+
+      <h3>保單資料</h3>
+      <div class="grid">
+        <div><label>總保費</label><div class="in"><span class="pre cs">US$</span><input id="premium" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
+        <div><label>首日退保價值</label><div class="in"><span class="pre cs">US$</span><input id="sv0" class="money" inputmode="decimal" placeholder="請輸入"></div></div>
+        <div><label>保費回贈（總保費）</label><div class="in"><input id="rebate" inputmode="decimal" placeholder="留空 = 冇回贈"><span class="suf">%</span></div></div>
+        <div><label>分紅實現率</label><div class="in"><input id="div" inputmode="decimal" placeholder="留空 = 100%"><span class="suf">%</span></div></div>
+      </div>
+
+      <h3>融資安排</h3>
+      <div class="grid">
+        <div><label>貸款銀行</label><input id="bank" placeholder="選填"></div>
+        <div><label>借貸成數 LTV</label><div class="in"><input id="ltv" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
+        <div><label>每年手續費（貸款額）</label><div class="in"><input id="annualFee" inputmode="decimal" placeholder="留空 = 冇"><span class="suf">%</span></div></div>
+        <div><label>一次性手續費</label><div class="in"><span class="pre cs">US$</span><input id="onceFee" class="money" inputmode="decimal" placeholder="留空 = 冇"></div></div>
+      </div>
+
+      <h3>貸款利率情境</h3>
+      <div class="grid">
+        <div class="rate" style="--c:#0a8f5b"><label>情境 A・低</label><div class="in"><input id="r1" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
+        <div class="rate" style="--c:#b28a35"><label>情境 B・中</label><div class="in"><input id="r2" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
+        <div class="rate" style="--c:#d6453d"><label>情境 C・高</label><div class="in"><input id="r3" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><small>貸款總額</small><b id="kLoan">—</b></div>
+        <div class="kpi"><small>自付總額</small><b id="kSelf">—</b></div>
+        <div class="kpi"><small>保費回贈</small><b id="kRebate">—</b></div>
+        <div class="kpi hl"><small>實付總額</small><b id="kNetPay">—</b></div>
+        <div class="kpi"><small>槓桿（總保費 ÷ 實付）</small><b id="kLev">—</b></div>
+      </div>
+    </section>
+
+    <!-- 2 現金價值 -->
+    <section class="card">
+      <h2><span class="num">2</span>逐年現金價值</h2>
+
+      <div class="drop" id="drop">
+        <span class="ico">📄</span>
+        <b>上載保單建議書，自動提取現金價值</b>
+        <small>撳呢度揀檔案，或者直接拖放入嚟 ・ 支援 PDF / Excel / CSV / TXT ・ 檔案只喺你部機內解析</small>
+        <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" hidden>
+      </div>
+      <div class="exopts">
+        <label>只匯入至第 <input type="text" id="exLimit" value="30" inputmode="numeric"> 年</label>
+        <label><input type="checkbox" id="exSet" checked> 同時更新「總保費」及「首日退保價值」</label>
+      </div>
+      <div class="status" id="exStatus"></div>
+
+      <div class="tip">💡 亦可手動輸入：只需填你想分析嘅年份，其餘可留空。可由 Excel 複製數字後撳任何一格貼上（⌘/Ctrl + V）。「保證現金價值」可留空；留空時分紅實現率唔會影響該年結果。</div>
+      <div class="toolbar">
+        <button class="btn" id="addRow">＋ 加一年</button>
+        <button class="btn" id="delRow">－ 減一年</button>
+        <button class="btn" id="clearRows">清空表格</button>
+      </div>
+      <div class="scroll" style="max-height:420px">
+        <table id="svTable">
+          <thead><tr><th style="width:90px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3 利率比較 -->
+    <section class="card">
+      <h2><span class="num">3</span>利率情境比較<span class="chip" id="bankLabel"></span></h2>
+      <div class="scroll stick"><table id="cmpTable"></table></div>
+    </section>
+
+    <!-- 4 明細 -->
+    <section class="card">
+      <h2><span class="num">4</span>逐年回報明細</h2>
+      <div class="toolbar">
+        <div class="seg" id="scSeg"></div>
+        <button class="btn primary" onclick="window.print()">列印 / 存 PDF</button>
+      </div>
+      <div class="kpis" style="margin:0 0 18px">
+        <div class="kpi"><small>年利息</small><b id="rYear">—</b></div>
+        <div class="kpi"><small>月利息</small><b id="rMonth">—</b></div>
+        <div class="kpi hl"><small>最早回本（已填年份中）</small><b id="rBE">—</b></div>
+        <div class="kpi"><small>最後一年 IRR</small><b id="rIrr">—</b></div>
+      </div>
+      <div class="scroll stick" style="max-height:560px">
+        <table id="resTable">
+          <thead><tr>
+            <th>保單年度</th><th>總現金價值</th><th>貸款總額</th><th>貸款總利息</th><th>還款後剩餘現金價值</th><th class="y">淨收益</th><th class="y">淨收益%</th><th>IRR</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <details>
+        <summary>展開逐年現金流明細（每欄 = 喺該年退保）</summary>
+        <div class="scroll stick" style="max-height:560px"><table id="cfTable"></table></div>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>計算說明與免責聲明</h2>
+      <div class="disc">
+        ・貸款總額 = 首日退保價值 × LTV；自付總額 = 總保費 − 貸款總額。<br>
+        ・保費回贈 = 總保費 × 回贈 %；實付總額 = 自付總額 − 保費回贈 + 一次性手續費。<br>
+        ・年利息 = 貸款總額 ×（貸款利率 + 每年手續費）；月利息 = 年利息 ÷ 12；貸款總利息 = 年利息 × 年數（只還息、退保時清還本金）。<br>
+        ・還款後剩餘現金價值 = 總現金價值 − 貸款總額 − 貸款總利息；淨收益 = 剩餘現金價值 − 實付總額；淨收益% = 淨收益 ÷ 實付總額。<br>
+        ・IRR 以年度現金流計算：第 0 年實付、其後每年付息、退保年取回（現金價值 − 貸款 − 當年利息）。<br>
+        ・留空處理：保費回贈、每年手續費、一次性手續費留空當 0；分紅實現率留空當 100%；未填利率嘅情境唔會計算。<br>
+        ・檔案提取：程式會喺每一行搵「保證金額 + 非保證金額 = 總額」嘅組合，取退保發還金額一組；悲觀／樂觀情景頁會略過。自動提取有機會出錯，請務必與建議書原文核對。<br>
+        ・本工具只供教育及參考用途，並不構成任何保險、投資或借貸建議。利率、現金價值、分紅及回贈並非保證，請以保險公司及銀行文件為準，並向持牌顧問查詢。
+      </div>
+    </section>
+    <footer>保費融資計算器 · 所有計算及檔案解析均喺你嘅瀏覽器內完成，不會上傳任何資料</footer>
+  </main>
+
+  <script>
+  const $ = id => document.getElementById(id);
+  const INIT_ROWS = 10;
+  let cur = 'USD', scenario = 0;
+
+  const num = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? null : n; };
+  const sym = () => cur === 'HKD' ? 'HK$' : 'US$';
+  const money = v => v == null ? '—' : (v < 0 ? '-' : '') + sym() + Math.round(Math.abs(v)).toLocaleString('en-US');
+  const pct = (v, d=2) => v == null || !isFinite(v) ? '—' : (v*100).toFixed(d) + '%';
+  const fmtIn = v => v == null ? '' : Math.round(v).toLocaleString('en-US');
+  const cls = v => v == null ? '' : v >= 0 ? 'pos' : 'neg';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* ---------- 現金價值表 ---------- */
+  const tbody = document.querySelector('#svTable tbody');
+  function addRow(g, e){
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td></td><td><input class="money" inputmode="decimal"></td><td><input class="money" inputmode="decimal"></td>';
+    const ins = tr.querySelectorAll('input');
+    ins[0].value = fmtIn(g ?? null); ins[1].value = fmtIn(e ?? null);
+    tbody.appendChild(tr); renumber();
+  }
+  function renumber(){ [...tbody.rows].forEach((r,i)=> r.cells[0].textContent = i+1); }
+  function getRows(){
+    return [...tbody.rows].map(r=>{ const i=r.querySelectorAll('input'); return {g:num(i[0].value), e:num(i[1].value)}; });
+  }
+  $('addRow').onclick = ()=>{ addRow(); update(); };
+  $('delRow').onclick = ()=>{ if(tbody.rows.length>1){ tbody.deleteRow(-1); update(); } };
+  $('clearRows').onclick = ()=>{ tbody.querySelectorAll('input').forEach(i=>i.value=''); update(); };
+
+  tbody.addEventListener('paste', ev=>{
+    const t = ev.target; if(t.tagName!=='INPUT') return;
+    const text = (ev.clipboardData||window.clipboardData).getData('text');
+    const lines = text.replace(/\r/g,'').split('\n').filter(l=>l.trim()!=='');
+    if(lines.length<=1 && !/\t/.test(text)) return;
+    ev.preventDefault();
+    const startRow = t.closest('tr').rowIndex-1, startCol = t.closest('td').cellIndex-1;
+    lines.forEach((line,i)=>{
+      const cells = line.split('\t');
+      while(tbody.rows.length <= startRow+i) addRow();
+      const ins = tbody.rows[startRow+i].querySelectorAll('input');
+      cells.forEach((c,j)=>{ const n=num(c); if(startCol+j<2 && n!=null) ins[startCol+j].value = fmtIn(n); });
+    });
+    update();
+  });
+
+  /* ---------- 檔案提取 ---------- */
+  const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/';
+  const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  const SKIP = /悲觀|樂觀|pessimistic|optimistic/i;
+  const libs = {};
+  const loadScript = src => libs[src] || (libs[src] = new Promise((ok,err)=>{
+    const s = document.createElement('script'); s.src = src; s.onload = ok;
+    s.onerror = ()=>{ delete libs[src]; err(new Error('無法載入解析程式庫，請檢查網絡連線後再試')); };
+    document.head.appendChild(s);
+  }));
+
+  // 讀檔：統一輸出 pages -> lines -> tokens
+  async function readPdf(file){
+    await loadScript(PDFJS+'build/pdf.min.js');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS+'build/pdf.worker.min.js';
+    const pdf = await pdfjsLib.getDocument({data:await file.arrayBuffer(), cMapUrl:PDFJS+'cmaps/', cMapPacked:true}).promise;
+    const pages = [];
+    for(let p=1; p<=pdf.numPages; p++){
+      const tc = await (await pdf.getPage(p)).getTextContent();
+      const items = tc.items.filter(i=>i.str && i.str.trim())
+        .map(i=>({s:i.str.trim(), x:i.transform[4], y:i.transform[5]}))
+        .sort((a,b)=> b.y-a.y || a.x-b.x);
+      const lines = []; let L = null;
+      items.forEach(it=>{                       // 以 y 座標將文字還原成「行」
+        if(!L || Math.abs(L.y-it.y) > 3){ L = {y:it.y, its:[]}; lines.push(L); }
+        L.its.push(it);
+      });
+      pages.push(lines.map(l=> l.its.sort((a,b)=>a.x-b.x).flatMap(i=>i.s.split(/\s+/))));
+    }
+    return pages;
+  }
+  async function readSheet(file){
+    await loadScript(XLSX_URL);
+    const wb = XLSX.read(await file.arrayBuffer(), {type:'array'});
+    return wb.SheetNames.map(n=> XLSX.utils.sheet_to_json(wb.Sheets[n], {header:1, raw:false, defval:''})
+      .map(r=> r.map(c=>String(c).trim()).filter(Boolean)));
+  }
+  const readText = t => t.split('\f').map(p=> p.replace(/\r/g,'').split('\n').map(l=> l.trim().split(/\s+/).filter(Boolean)));
+
+  // 字元分類：年齡（65歲）／細整數（年度或年齡）／金額／負數（略過）／文字
+  function tok(t){
+    const m = t.match(/^(\d{1,3})歲$/); if(m) return {age:+m[1]};
+    if(!/^\(?-?(US|HK)?\$?[\d,]*\.?\d+\)?$/i.test(t)) return null;
+    if(/^\(|-/.test(t)) return {skip:true};
+    const v = parseFloat(t.replace(/[^0-9.]/g,''));
+    if(/^\d{1,3}$/.test(t) && v>=1 && v<=120) return {small:v};
+    return {v};
+  }
+  function prep(tokens){
+    const t = []; tokens.forEach(s=>{ if(s==='歲' && t.length) t[t.length-1] += '歲'; else t.push(s); });
+    const r = {smalls:[], age:null, nums:[], bad:0};
+    t.forEach(s=>{ const k = tok(s);
+      if(!k) r.bad++; else if(k.age) r.age = k.age; else if(k.small) r.smalls.push(k.small); else if(!k.skip) r.nums.push(k.v); });
+    return r;
+  }
+  const isCand = r => r.bad<=1 && (r.age!=null || r.smalls.length) && r.nums.length;
+
+  // 分析一行：搵「保證 + 非保證 = 總額」，取總額最細嗰組（退保發還金額 ≤ 身故賠償）
+  function analyze(r, P, simple){
+    const n = r.nums, tri = [];
+    for(let i=0;i<n.length;i++) for(let j=i+1;j<n.length;j++) for(let k=0;k<n.length;k++)
+      if(k!==i && k!==j && Math.abs(n[i]+n[j]-n[k])<=1) tri.push({a:n[i], b:n[j], t:n[k]});
+    let out;
+    if(tri.length){
+      const minT = Math.min(...tri.map(x=>x.t));
+      let c = tri.filter(x=>x.t===minT);
+      const noP = c.filter(x=>x.a!==P && x.b!==P);      // 排除「保費 + 收支比對 = 總額」嘅巧合
+      if(noP.length) c = noP;
+      const {a,b,t} = c[0];
+      let g = null;
+      if(a===0 || b===0) g = Math.max(a,b);
+      else{
+        const others = tri.filter(x=>x.t>minT);          // 身故賠償組合會共用同一個非保證金額
+        const sa = others.some(x=>x.a===a||x.b===a), sb = others.some(x=>x.a===b||x.b===b);
+        if(sa!==sb) g = sa ? b : a;
+      }
+      out = {e:t, g, pair:[a,b]};
+    } else if(simple && n.length>=1 && n.length<=2){
+      out = {e:Math.max(...n), g:n.length===2 ? Math.min(...n) : null};
+    } else return null;
+    if(r.smalls.length>=2){ out.year = Math.min(r.smalls[0],r.smalls[1]); out.ageAt = Math.max(r.smalls[0],r.smalls[1]); }
+    else if(r.smalls.length===1) out.year = r.smalls[0];
+    else out.ageAt = r.age;
+    return out;
+  }
+  function build(cands, simple){
+    const cnt = new Map();
+    cands.forEach(r=> new Set(r.nums).forEach(v=>{ if(v) cnt.set(v,(cnt.get(v)||0)+1); }));
+    let P = null, best = 0; cnt.forEach((c,v)=>{ if(c>best){ best=c; P=v; } });
+    if(best < cands.length/2) P = null;                 // P = 幾乎每行都出現嘅數（繳付保費總額）
+    return {rows:cands.map(r=>analyze(r,P,simple)).filter(Boolean), P};
+  }
+  // 後備：文字冇分行（每個數字一行）時，自動估每列有幾多個數字
+  function bestChunks(run){
+    let best = [];
+    for(let k=5;k<=14;k++){
+      if(run.length%k) continue;
+      const cs = []; for(let i=0;i<run.length;i+=k) cs.push(prep(run.slice(i,i+k)));
+      const ok = cs.filter(r=> (r.age!=null||r.smalls.length) && analyze(r,null,false));
+      if(ok.length>=cs.length*0.8 && ok.length>best.length) best = ok;
+    }
+    return best;
+  }
+  function streamCands(pages){
+    const out = [];
+    pages.forEach(p=>{
+      let run = []; const flush = ()=>{ if(run.length>=10) out.push(...bestChunks(run)); run = []; };
+      p.flat().forEach(s=>{ (tok(s) || s==='歲') ? run.push(s) : flush(); }); flush();
+    });
+    return out;
+  }
+  function extract(pages, isPdf){
+    const texts = pages.map(p=>p.map(l=>l.join(' ')).join('\n')), text = texts.join('\n');
+    const lineCands = skip => { const c = [];
+      pages.forEach((p,i)=>{ if(skip && SKIP.test(texts[i])) return; p.forEach(l=>{ const r = prep(l); if(isCand(r)) c.push(r); }); });
+      return c; };
+    let b = build(lineCands(isPdf), !isPdf);
+    if(b.rows.length<3 && isPdf) b = build(lineCands(false), false);
+    if(b.rows.length<3){ const s = build(streamCands(pages), false); if(s.rows.length>b.rows.length) b = s; }
+
+    // 投保年齡：由「年度 + 年齡」行推算，用嚟換算「65歲」呢類行
+    const cnt = {}; b.rows.forEach(r=>{ if(r.year && r.ageAt){ const d = r.ageAt-r.year; cnt[d] = (cnt[d]||0)+1; } });
+    let issue = Object.keys(cnt).sort((x,y)=>cnt[y]-cnt[x])[0]; issue = issue!=null ? +issue : null;
+    if(issue==null){ const m = text.match(/年齡[:：]?\s*(\d{1,3})/); if(m) issue = +m[1]; }
+
+    const map = new Map(); let skipped = 0;
+    b.rows.forEach(r=>{
+      let y = r.year;
+      if(!y){ if(issue==null){ skipped++; return; } y = r.ageAt-issue; }
+      if(y>=1 && !map.has(y)) map.set(y, r);            // 同一年度以最先出現嘅表為準
+    });
+    // 保證金額未能確定嘅行：揀同鄰近年度保證金額最接近嗰個
+    const ys = [...map.keys()].sort((x,y)=>x-y);
+    const fix = order => { let last = null; order.forEach(y=>{ const r = map.get(y);
+      if(r.g==null && r.pair && last!=null) r.g = Math.abs(r.pair[0]-last)<=Math.abs(r.pair[1]-last) ? r.pair[0] : r.pair[1];
+      if(r.g!=null) last = r.g; }); };
+    fix(ys); fix([...ys].reverse());
+    return {map, P:b.P, text, skipped, years:ys};
+  }
+
+  async function handleFile(file){
+    if(!file) return;
+    const st = $('exStatus'); st.className = 'status'; st.textContent = '⏳ 正在讀取 '+file.name+' …';
+    try{
+      const ext = file.name.split('.').pop().toLowerCase();
+      const isPdf = ext==='pdf' || file.type==='application/pdf';
+      const pages = isPdf ? await readPdf(file) : /^(xlsx|xls|csv)$/.test(ext) ? await readSheet(file) : readText(await file.text());
+      const res = extract(pages, isPdf);
+      if(!res.map.size) throw new Error('搵唔到現金價值表。如果係掃描版（圖片）PDF 或者版面特殊，請改用手動輸入或由 Excel 貼上。');
+
+      const limit = Math.max(1, Math.round(num($('exLimit').value)||30));
+      const maxY = Math.min(limit, res.years[res.years.length-1]);
+      tbody.innerHTML = '';
+      let filled = 0;
+      for(let y=1;y<=maxY;y++){ const r = res.map.get(y); if(r) filled++; addRow(r ? r.g : null, r ? r.e : null); }
+
+      let msg = '✅ 已由「'+file.name+'」搵到 '+res.map.size+' 個保單年度（第 '+res.years[0]+' 至 '+res.years[res.years.length-1]+' 年），已填入 '+filled+' 個年度（至第 '+maxY+' 年）。';
+      if($('exSet').checked){
+        const m = res.text.match(/繕發時之退保發還金額[:：]?\s*\$?\s*([\d,]+)/);
+        const sv0 = m ? num(m[1]) : (res.map.get(1) ? res.map.get(1).e : null);
+        if(res.P){ $('premium').value = fmtIn(res.P); msg += '\n・總保費設為 '+fmtIn(res.P); }
+        if(sv0){ $('sv0').value = fmtIn(sv0); msg += '\n・首日退保價值設為 '+fmtIn(sv0); }
+      }
+      const cm = res.text.match(/保單貨幣[:：]?\s*(美元|港元|港幣)/);
+      if(cm){ const fc = cm[1]==='美元' ? 'USD' : 'HKD';
+        if(fc!==cur) msg += '\n⚠️ 檔案貨幣係'+cm[1]+'，但而家揀咗 '+sym()+'；數字未有換算，請喺第 1 部分揀返正確貨幣。'; }
+      if(res.skipped) msg += '\n・有 '+res.skipped+' 行以年齡標示而未能換算成保單年度，已略過。';
+      msg += '\n請與建議書原文核對數字。';
+      st.textContent = msg;
+      update();
+    }catch(err){
+      st.className = 'status err';
+      st.textContent = '⚠️ '+(err && err.name==='PasswordException' ? '呢個 PDF 有密碼保護，請先解除密碼再上載。' : (err && err.message) || '讀取檔案失敗');
+    } 
+
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
