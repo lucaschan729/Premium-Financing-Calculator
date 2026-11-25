@@ -18,8 +18,6 @@
     header .inner,main{max-width:1180px;margin:0 auto}
     header h1{font-size:30px;letter-spacing:1px;font-weight:700}
     header h1 span{color:var(--gold2);font-weight:400;font-size:.7em;margin-left:6px;letter-spacing:.5px}
-    .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-    .tags span{font-size:12px;color:#dbe4f0;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);padding:4px 12px;border-radius:99px}
     main{padding:0 16px 40px;margin-top:-48px}
 
     /* ---------- 卡片 ---------- */
@@ -68,7 +66,6 @@
     .kpi.hl small{color:#c5d2e3}.kpi.hl b{color:var(--gold2)}
 
     /* ---------- 上載 ---------- */
-    .tip{background:#fff8e6;border-left:4px solid var(--gold);padding:10px 14px;border-radius:8px;font-size:13px;color:#6b5514;margin-bottom:14px}
     .drop{border:2px dashed #c3cede;border-radius:14px;padding:26px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
     .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0;transform:translateY(-1px)}
     .drop .ico{font-size:30px;display:block;margin-bottom:4px}
@@ -77,6 +74,7 @@
     .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
     .exopts label{display:flex;align-items:center;gap:6px;margin:0;cursor:pointer}
     .exopts input[type=text]{width:60px;padding:6px 8px;text-align:center}
+    .exopts .btn{margin-left:auto}
     .status{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
     .status.err{background:#fdeeee;border-left-color:var(--neg);color:#8a2a25}
     .status:empty{display:none}
@@ -120,13 +118,13 @@
 
     @media(max-width:600px){
       header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
-      .card{padding:18px}.fx{margin-left:0}.btn.primary{margin-left:0}
+      .card{padding:18px}.fx{margin-left:0}.btn.primary{margin-left:0}.exopts .btn{margin-left:0}
       .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
       .kpi b{font-size:17px}th,td{padding:8px 10px}
     }
     @media print{
       body{background:#fff}header{padding:20px;background:var(--navy)}main{margin-top:10px}
-      .btn,.drop,.exopts,.tip,.status,#curSeg,.fx,.tags{display:none}
+      .btn,.drop,.exopts,.status,#curSeg,.fx{display:none}
       .card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
       .scroll{max-height:none!important;overflow:visible}
     }
@@ -136,7 +134,6 @@
   <header>
     <div class="inner">
       <h1>保費融資計算器<span>Premium Financing</span></h1>
-      <div class="tags"><span>保費回贈</span><span>多利率情境</span><span>淨收益</span><span>IRR</span><span>建議書自動提取</span></div>
     </div>
   </header>
 
@@ -197,15 +194,10 @@
       <div class="exopts">
         <label>只匯入至第 <input type="text" id="exLimit" value="30" inputmode="numeric"> 年</label>
         <label><input type="checkbox" id="exSet" checked> 同時更新「總保費」及「首日退保價值」</label>
+        <button class="btn" id="clearRows">清空表格</button>
       </div>
       <div class="status" id="exStatus"></div>
 
-      <div class="tip">💡 亦可手動輸入：只需填寫需要分析的年份，其餘可留空。可從 Excel 複製數字後，點選任何一格貼上（⌘/Ctrl + V）。「保證現金價值」可留空；留空時分紅實現率不會影響該年結果。</div>
-      <div class="toolbar">
-        <button class="btn" id="addRow">＋ 增加一年</button>
-        <button class="btn" id="delRow">－ 減少一年</button>
-        <button class="btn" id="clearRows">清空表格</button>
-      </div>
       <div class="scroll" style="max-height:420px">
         <table id="svTable">
           <thead><tr><th style="width:90px">保單年度</th><th>保證現金價值（可留空）</th><th>總現金價值（預期）</th></tr></thead>
@@ -248,16 +240,13 @@
     </section>
 
     <section class="card">
-      <h2>計算說明與免責聲明</h2>
+      <h2>計算說明</h2>
       <div class="disc">
         ・貸款總額 = 首日退保價值 × LTV；自付總額 = 總保費 − 貸款總額。<br>
         ・保費回贈 = 總保費 × 回贈 %；實付總額 = 自付總額 − 保費回贈 + 一次性手續費。<br>
         ・年利息 = 貸款總額 ×（貸款利率 + 每年手續費）；月利息 = 年利息 ÷ 12；貸款總利息 = 年利息 × 年數（只償還利息，退保時清還本金）。<br>
         ・還款後剩餘現金價值 = 總現金價值 − 貸款總額 − 貸款總利息；淨收益 = 剩餘現金價值 − 實付總額；淨收益% = 淨收益 ÷ 實付總額。<br>
         ・IRR 以年度現金流計算：第 0 年實付、其後每年支付利息、退保年取回（現金價值 − 貸款 − 當年利息）。<br>
-        ・留空處理：保費回贈、每年手續費、一次性手續費留空時視為 0；分紅實現率留空時視為 100%；未填寫利率的情境不會計算。<br>
-        ・檔案提取：程式會在每一行尋找「保證金額 + 非保證金額 = 總額」的組合，並取退保發還金額一組；悲觀／樂觀情景頁會略過。自動提取可能出錯，請務必與建議書原文核對。<br>
-        ・本工具只供教育及參考用途，並不構成任何保險、投資或借貸建議。利率、現金價值、分紅及回贈並非保證，請以保險公司及銀行文件為準，並向持牌顧問查詢。
       </div>
     </section>
     <footer>保費融資計算器 · 所有計算及檔案解析均在您的瀏覽器內完成，不會上傳任何資料</footer>
@@ -289,8 +278,6 @@
   function getRows(){
     return [...tbody.rows].map(r=>{ const i=r.querySelectorAll('input'); return {g:num(i[0].value), e:num(i[1].value)}; });
   }
-  $('addRow').onclick = ()=>{ addRow(); update(); };
-  $('delRow').onclick = ()=>{ if(tbody.rows.length>1){ tbody.deleteRow(-1); update(); } };
   $('clearRows').onclick = ()=>{ tbody.querySelectorAll('input').forEach(i=>i.value=''); update(); };
 
   tbody.addEventListener('paste', ev=>{
