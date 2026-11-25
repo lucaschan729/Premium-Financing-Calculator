@@ -105,8 +105,11 @@
     .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--pos);padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
     .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600;transition:.15s;font-family:inherit}
     .btn:hover{border-color:var(--gold);color:#a8842f;background:#fffaf0}
-    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);margin-left:auto}
+    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);padding:11px 22px;font-size:14px}
     .btn.primary:hover{background:var(--navy2);color:#fff}
+    .btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);padding:10px 22px;font-size:14px}
+    .btn.gold:hover{background:#b28a35;color:#fff}
+    .note{font-size:12.5px;color:var(--muted)}
     .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
     .sub{display:block;font-size:12px;font-weight:400;color:var(--muted)}
     details{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:4px 16px;background:var(--soft)}
@@ -116,24 +119,69 @@
     .disc{font-size:12.5px;color:var(--muted);line-height:1.9}
     footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 30px}
 
+    /* ---------- 客戶報告（預覽模式：body.rpmode） ---------- */
+    #report,#rpBar{display:none}
+    body.rpmode>header,body.rpmode>main{display:none}
+    body.rpmode #rpBar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;position:sticky;top:0;z-index:10;background:var(--navy);padding:10px 16px}
+    #rpBar span{font-size:12.5px;color:#c5d2e3}
+    body.rpmode #report{display:block;background:#fff;max-width:820px;margin:18px auto 40px;padding:36px 40px;border-radius:6px;box-shadow:0 8px 24px rgba(15,37,64,.12)}
+    #report .rp-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid var(--gold);padding-bottom:10px;margin-bottom:12px}
+    #report .rp-t{font-size:22pt;font-weight:700;color:var(--navy);letter-spacing:1px;line-height:1.2}
+    #report .rp-s{font-size:9pt;color:var(--muted);letter-spacing:1.5px;margin-top:2px}
+    #report .rp-meta{font-size:9pt;text-align:right;line-height:1.7;color:#44536a}
+    #report .rp-h{font-size:12pt;font-weight:700;color:var(--navy);margin:16px 0 8px;padding-left:8px;border-left:4px solid var(--gold);line-height:1.3}
+    #report .rp-p{font-size:10pt;line-height:1.75;margin-bottom:8px}
+    #report .rp-n{font-size:8.5pt;color:var(--muted);line-height:1.6;margin-top:6px}
+    #report .rp-leg{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:9pt;margin-top:6px}
+    #report .rp-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+    #report .rp-k{border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:var(--soft)}
+    #report .rp-k small{display:block;font-size:8pt;color:var(--muted)}
+    #report .rp-k b{font-size:11pt;color:var(--navy);font-variant-numeric:tabular-nums}
+    #report .rp-k.hl{border:1.5px solid var(--gold);background:#fdf6e3}
+    #report .rp-rates{display:grid;gap:8px}
+    #report .rp-r{border:1px solid var(--line);border-top:3px solid var(--c);border-radius:6px;padding:8px 10px;break-inside:avoid}
+    #report .rp-r .nm{font-size:9.5pt;font-weight:700;color:var(--c)}
+    #report .rp-r b{font-size:13pt;color:var(--navy);display:block;font-variant-numeric:tabular-nums}
+    #report .rp-r small{font-size:8.5pt;color:var(--muted)}
+    #report .rp-tw{overflow-x:auto}
+    #report table{border-collapse:collapse;font-size:9pt}
+    #report th,#report td{padding:5px 7px;border-bottom:1px solid var(--line)}
+    #report th{font-size:8.5pt;border-bottom:1.5px solid var(--navy)}
+    #report tr{break-inside:avoid}
+    #report tbody tr:hover td{background:transparent}
+    #report .sub{font-size:7.5pt}
+    #report .rp-be td{background:var(--soft);font-weight:600;border-bottom:0}
+    #report .rp-break{break-before:page;page-break-before:always}
+    #report .rp-avoid{break-inside:avoid}
+    #report ul{margin:0;padding:0;list-style:none}
+    #report li{font-size:9pt;line-height:1.65;margin-bottom:3px;padding-left:12px;position:relative}
+    #report li::before{content:"•";position:absolute;left:0;color:var(--gold)}
+    #report .rp-foot{margin-top:14px;padding-top:8px;border-top:1px solid var(--line);font-size:8pt;color:var(--muted);line-height:1.6}
+
     @media(max-width:600px){
       header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
-      .card{padding:18px}.fx{margin-left:0}.btn.primary{margin-left:0}.exopts .btn{margin-left:0}
+      .card{padding:18px}.fx{margin-left:0}.exopts .btn{margin-left:0}
       .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
       .kpi b{font-size:17px}th,td{padding:8px 10px}
     }
+    @media screen and (max-width:600px){
+      body.rpmode #report{padding:20px 16px;margin:10px 8px 30px}
+      #report .rp-kpis{grid-template-columns:repeat(2,1fr)}
+      #report .rp-rates{grid-template-columns:1fr!important}
+    }
+    @page{size:A4;margin:12mm}
     @media print{
-      body{background:#fff}header{padding:20px;background:var(--navy)}main{margin-top:10px}
-      .btn,.drop,.exopts,.status,#curSeg,.fx{display:none}
-      .card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
-      .scroll{max-height:none!important;overflow:visible}
+      html,body{background:#fff}
+      #rpBar,body.rpmode #rpBar{display:none}
+      body.rpmode #report{max-width:none;margin:0;padding:0;border-radius:0;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      #report .rp-tw{overflow:visible}
     }
   </style>
   </head>
   <body>
   <header>
     <div class="inner">
-      <h1>保費融資計算器<span>Premium Financing Calculator</span></h1>
+      <h1>保費融資計算器<span>Premium Financing</span></h1>
     </div>
   </header>
 
@@ -217,7 +265,6 @@
       <h2><span class="num">4</span>逐年回報明細</h2>
       <div class="toolbar">
         <div class="seg" id="scSeg"></div>
-        <button class="btn primary" onclick="window.print()">列印 / 儲存為 PDF</button>
       </div>
       <div class="kpis" style="margin:0 0 18px">
         <div class="kpi"><small>年利息</small><b id="rYear">—</b></div>
@@ -239,18 +286,44 @@
       </details>
     </section>
 
+    <!-- 5 匯出 -->
     <section class="card">
-      <h2>計算說明</h2>
+      <h2><span class="num">5</span>匯出客戶報告</h2>
+      <div class="grid">
+        <div><label>客戶稱呼</label><input id="rpClient" placeholder="選填，例如：陳先生"></div>
+        <div><label>顧問姓名／聯絡方式</label><input id="rpAdvisor" placeholder="選填"></div>
+      </div>
+      <div class="toolbar" style="margin:18px 0 0">
+        <button class="btn primary" id="exportPdf">預覽及匯出 PDF 報告</button>
+        <span class="note">按下後會先顯示報告預覽，確認內容後再按「列印 / 儲存為 PDF」。</span>
+      </div>
+      <div class="status err" id="rpStatus" style="margin:14px 0 0"></div>
+    </section>
+
+    <section class="card">
+      <h2>計算說明與免責聲明</h2>
       <div class="disc">
         ・貸款總額 = 首日退保價值 × LTV；自付總額 = 總保費 − 貸款總額。<br>
         ・保費回贈 = 總保費 × 回贈 %；實付總額 = 自付總額 − 保費回贈 + 一次性手續費。<br>
         ・年利息 = 貸款總額 ×（貸款利率 + 每年手續費）；月利息 = 年利息 ÷ 12；貸款總利息 = 年利息 × 年數（只償還利息，退保時清還本金）。<br>
         ・還款後剩餘現金價值 = 總現金價值 − 貸款總額 − 貸款總利息；淨收益 = 剩餘現金價值 − 實付總額；淨收益% = 淨收益 ÷ 實付總額。<br>
         ・IRR 以年度現金流計算：第 0 年實付、其後每年支付利息、退保年取回（現金價值 − 貸款 − 當年利息）。<br>
+        ・留空處理：保費回贈、每年手續費、一次性手續費留空時視為 0；分紅實現率留空時視為 100%；未填寫利率的情境不會計算。<br>
+        ・現金價值表：只需填寫需要分析的年份，其餘可留空；「保證現金價值」留空時，分紅實現率不會影響該年結果。<br>
+        ・檔案提取：程式會在每一行尋找「保證金額 + 非保證金額 = 總額」的組合，並取退保發還金額一組；悲觀／樂觀情景頁會略過。自動提取可能出錯，請務必與建議書原文核對。<br>
+        ・本工具只供教育及參考用途，並不構成任何保險、投資或借貸建議。利率、現金價值、分紅及回贈並非保證，請以保險公司及銀行文件為準，並向持牌顧問查詢。
       </div>
     </section>
     <footer>保費融資計算器 · 所有計算及檔案解析均在您的瀏覽器內完成，不會上傳任何資料</footer>
   </main>
+
+  <!-- 報告預覽 -->
+  <div id="rpBar">
+    <button class="btn" id="rpBack">← 返回修改</button>
+    <button class="btn gold" id="rpPrint">列印 / 儲存為 PDF</button>
+    <span>以下為報告預覽，列印時不會包括此列</span>
+  </div>
+  <div id="report"></div>
 
   <script>
   const $ = id => document.getElementById(id);
@@ -495,7 +568,7 @@
     const premium=pIn||0, sv0=sIn||0, ltv=(lIn||0)/100;
     const loan = sv0*ltv, self = premium-loan, once=num($('onceFee').value)||0;
     const rebate = premium*(num($('rebate').value)||0)/100;
-    return {ready, premium, loan, self, rebate, once, first:self-rebate+once,
+    return {ready, premium, sv0, ltv, loan, self, rebate, once, first:self-rebate+once,
       fee:(num($('annualFee').value)||0)/100, div:(num($('div').value)??100)/100,
       rates:['r1','r2','r3'].map(id=>{ const n=num($(id).value); return n==null ? null : n/100; })};
   }
@@ -518,6 +591,7 @@
   const MSG1 = '請先在第 1 部分填寫總保費、首日退保價值及借貸成數';
   const MSG2 = '請先在第 2 部分填寫現金價值';
   const MSG3 = '請先在第 1 部分填寫此情境的貸款利率';
+  const MSG4 = '請先在第 1 部分填寫最少一個貸款利率情境';
 
   function update(){
     const b = base(), rows = getRows();
@@ -582,6 +656,142 @@
       $('cfTable').innerHTML = h;
     }
   }
+
+  /* ---------- 客戶報告（PDF） ---------- */
+  const COL = ['#0a8f5b','#b28a35','#d6453d'], LET = ['A','B','C'];
+  const sq = c => '<svg width="10" height="10" style="vertical-align:-1px;margin-right:5px"><rect width="10" height="10" rx="2" fill="'+c+'"/></svg>';
+  const short = v => { const a = Math.abs(v); return (v<0?'-':'')+sym()+(a>=1e6 ? (a/1e6).toFixed(1)+'M' : a>=1e3 ? (a/1e3).toFixed(0)+'K' : Math.round(a)); };
+  const nice = x => { const p = Math.pow(10, Math.floor(Math.log10(x))), f = x/p; return (f<=1?1:f<=2?2:f<=5?5:10)*p; };
+
+  // 重點年份：優先取第 5、10、15、20、25、30 年，否則平均抽取最多 6 個
+  function pickYears(ys){
+    const pref = [5,10,15,20,25,30].filter(y=>ys.includes(y));
+    if(pref.length>=3 || ys.length<=6) return pref.length>=3 ? pref : ys;
+    const out = []; for(let i=0;i<6;i++) out.push(ys[Math.round(i*(ys.length-1)/5)]);
+    return [...new Set(out)];
+  }
+
+  // 淨收益走勢圖（SVG，列印時為向量圖）
+  function chartSvg(S, ys){
+    const W=1000, H=300, l=92, r=24, t=14, bt=34;
+    const vals = S.flatMap(s=>s.list.map(x=>x.net));
+    const lo = Math.min(0,...vals), hi = Math.max(0,...vals), st = nice(((hi-lo)||1)/5);
+    const y0 = Math.floor(lo/st)*st, y1 = Math.ceil(hi/st)*st || st;
+    const x0 = ys[0], x1 = ys[ys.length-1];
+    const X = n => x1===x0 ? (l+W-r)/2 : l+(n-x0)/(x1-x0)*(W-l-r);
+    const Y = v => t+(y1-v)/(y1-y0)*(H-t-bt);
+    let g = '';
+    for(let v=y0; v<=y1+st/2; v+=st){
+      const z = Math.abs(v)<st/1e6, y = Y(v).toFixed(1);
+      g += '<line x1="'+l+'" x2="'+(W-r)+'" y1="'+y+'" y2="'+y+'" stroke="'+(z?'#8894a3':'#e3e8f0')+'" stroke-width="'+(z?1.5:1)+'"/>'+
+           '<text x="'+(l-8)+'" y="'+(+y+4)+'" text-anchor="end" font-size="13" fill="#6b7a8c">'+short(z?0:v)+'</text>';
+    }
+    const stride = Math.ceil(ys.length/10);
+    ys.forEach((n,i)=>{ if(i%stride===0) g += '<text x="'+X(n).toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle" font-size="13" fill="#6b7a8c">第'+n+'年</text>'; });
+    S.forEach(s=>{
+      g += '<polyline fill="none" stroke="'+COL[s.i]+'" stroke-width="3" stroke-linejoin="round" points="'+s.list.map(x=>X(x.n).toFixed(1)+','+Y(x.net).toFixed(1)).join(' ')+'"/>';
+      if(ys.length<=15) g += s.list.map(x=>'<circle cx="'+X(x.n).toFixed(1)+'" cy="'+Y(x.net).toFixed(1)+'" r="4.5" fill="'+COL[s.i]+'"/>').join('');
+    });
+    return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg>'+
+      '<div class="rp-leg" style="justify-content:center">'+S.map(s=>'<span>'+sq(COL[s.i])+s.name+'</span>').join('')+'</div>';
+  }
+
+  function buildReport(){
+    const rp = $('report'), b = base(), rows = getRows();
+    const ys = rows.map((r,i)=> r.e==null && r.g==null ? null : i+1).filter(y=>y!=null);
+    const sc = b.rates.map((r,i)=> r==null ? null : i).filter(i=>i!=null);
+    const err = !b.ready ? MSG1 : !ys.length ? MSG2 : !sc.length ? MSG4 : '';
+    if(err) return err;
+
+    const S = sc.map(i=>{
+      const list = calc(b, b.rates[i], rows).filter(x=>!x.empty);
+      return {i, rate:b.rates[i], pay:b.loan*(b.rates[i]+b.fee), list, by:new Map(list.map(x=>[x.n,x])),
+        be:list.find(x=>x.net>=0), name:'情境 '+LET[i]+'（年利率 '+(b.rates[i]*100).toFixed(2)+'%）'};
+    });
+    const d = new Date(), date = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
+    const client = $('rpClient').value.trim(), advisor = $('rpAdvisor').value.trim(), bank = $('bank').value.trim();
+    const lev = b.first>0 ? (b.premium/b.first).toFixed(2) : null;
+
+    // 頁首
+    let h = '<div class="rp-head"><div><div class="rp-t">保費融資方案摘要</div><div class="rp-s">PREMIUM FINANCING SUMMARY</div></div><div class="rp-meta">'+
+      (client ? '客戶：'+esc(client)+'<br>' : '')+(advisor ? '顧問：'+esc(advisor)+'<br>' : '')+(bank ? '貸款銀行：'+esc(bank)+'<br>' : '')+
+      '報告日期：'+date+'<br>貨幣：'+(cur==='HKD'?'港元':'美元')+'</div></div>';
+
+    // 一、方案概覽
+    h += '<div class="rp-h">一、方案概覽</div><p class="rp-p">本方案以銀行貸款支付部分保費。您實際支付 <b>'+money(b.first)+'</b>，即可持有總保費 <b>'+money(b.premium)+'</b> 的保單'+
+      (lev ? '（約 '+lev+' 倍槓桿）' : '')+'。貸款期間每年只須支付利息，退保時以保單現金價值償還貸款本金。</p>';
+    if(b.premium>0){
+      const parts = [['銀行貸款',b.loan,'#0f2540'],['保費回贈',b.rebate,'#c9a24b'],['您的出資',b.self-b.rebate,'#0a8f5b']];
+      const tot = parts.reduce((s,p)=>s+Math.max(0,p[1]),0) || 1; let x = 0;
+      h += '<svg viewBox="0 0 1000 36" style="width:100%;height:auto;display:block;border-radius:6px">'+parts.map(p=>{
+        const w = Math.max(0,p[1])/tot*1000, s = '<rect x="'+x.toFixed(1)+'" y="0" width="'+w.toFixed(1)+'" height="36" fill="'+p[2]+'"/>'; x += w; return s; }).join('')+'</svg>'+
+        '<div class="rp-leg">'+parts.map(p=>'<span>'+sq(p[2])+p[0]+' <b>'+money(p[1])+'</b>（佔總保費 '+pct(p[1]/b.premium,1)+'）</span>').join('')+'</div>';
+    }
+    h += '<div class="rp-kpis">'+
+      '<div class="rp-k"><small>總保費</small><b>'+money(b.premium)+'</b></div>'+
+      '<div class="rp-k"><small>貸款總額（借貸成數 '+pct(b.ltv,0)+'）</small><b>'+money(b.loan)+'</b></div>'+
+      '<div class="rp-k"><small>自付總額</small><b>'+money(b.self)+'</b></div>'+
+      '<div class="rp-k"><small>保費回贈</small><b>'+money(b.rebate)+'</b></div>'+
+      '<div class="rp-k hl"><small>實付總額</small><b>'+money(b.first)+'</b></div></div>'+
+      '<p class="rp-n">貸款總額 = 首日退保價值 '+money(b.sv0)+' × 借貸成數；實付總額 = 自付總額 − 保費回贈'+(b.once>0 ? ' + 一次性手續費 '+money(b.once) : '')+'。</p>';
+
+    // 二、利息支出
+    h += '<div class="rp-h">二、每年利息支出</div><div class="rp-rates" style="grid-template-columns:repeat('+S.length+',1fr)">'+S.map(s=>
+      '<div class="rp-r" style="--c:'+COL[s.i]+'"><span class="nm">'+s.name+'</span><b>每年 '+money(s.pay)+'</b><small>即每月約 '+money(s.pay/12)+'</small></div>').join('')+'</div>'+
+      '<p class="rp-n">貸款利率一般為浮動利率，以上為假設情境'+(b.fee>0 ? '，利息已包括每年手續費 '+pct(b.fee)+'（按貸款額計算）' : '')+'。</p>';
+
+    // 三、回報一覽
+    const ky = pickYears(ys);
+    h += '<div class="rp-avoid"><div class="rp-h">三、預期回報一覽（假設於該年度退保）</div><div class="rp-tw"><table><thead><tr><th>退保年度</th><th>預期總現金價值</th>'+
+      S.map(s=>'<th>'+s.name+'<br>淨收益</th>').join('')+'</tr></thead><tbody>'+
+      ky.map(y=>'<tr><td>第 '+y+' 年</td><td>'+money(S[0].by.get(y).sv)+'</td>'+S.map(s=>{ const x = s.by.get(y);
+        return '<td class="'+cls(x.net)+'">'+money(x.net)+'<span class="sub">回報 '+pct(x.roi,1)+'・IRR '+pct(x.irr,1)+'</span></td>'; }).join('')+'</tr>').join('')+
+      '<tr class="rp-be"><td colspan="2">最早回本年度（已填寫年份中）</td>'+S.map(s=>'<td>'+(s.be ? '第 '+s.be.n+' 年' : '未回本')+'</td>').join('')+'</tr></tbody></table></div>'+
+      '<p class="rp-n">淨收益 = 退保所得 − 償還貸款本金 − 累計利息 − 實付總額。回報 = 淨收益 ÷ 實付總額。IRR（內部回報率）= 按實付總額及每年利息支出計算的年化回報率。</p></div>';
+
+    // 四、走勢圖
+    h += '<div class="rp-break rp-avoid"><div class="rp-h">四、淨收益走勢</div>'+chartSvg(S, ys)+'</div>';
+
+    // 五、逐年明細
+    h += '<div class="rp-h">五、逐年明細</div><div class="rp-tw"><table><thead><tr><th>保單年度</th><th>預期總現金價值</th>'+
+      S.map(s=>'<th>情境 '+LET[s.i]+' 淨收益</th><th>情境 '+LET[s.i]+' IRR</th>').join('')+'</tr></thead><tbody>'+
+      ys.map(y=>'<tr><td>'+y+'</td><td>'+money(S[0].by.get(y).sv)+'</td>'+S.map(s=>{ const x = s.by.get(y);
+        return '<td class="'+cls(x.net)+'">'+money(x.net)+'</td><td class="'+cls(x.irr)+'">'+pct(x.irr)+'</td>'; }).join('')+'</tr>').join('')+'</tbody></table></div>';
+
+    // 六、重要事項
+    h += '<div class="rp-avoid"><div class="rp-h">六、重要事項及風險</div><ul>'+
+      '<li><b>現金價值並非保證：</b>預期總現金價值包括非保證紅利，實際金額可能較高或較低。本報告以分紅實現率 '+pct(b.div,0)+' 計算。</li>'+
+      '<li><b>利率風險：</b>貸款利率可能隨市場上升，令利息支出增加、淨收益減少，甚至出現虧損。以上利率情境僅為假設。</li>'+
+      '<li><b>提早退保風險：</b>保單早年的退保價值可能低於已繳保費，提早退保可能蒙受損失。</li>'+
+      '<li><b>貸款條款：</b>保單一般須抵押予銀行。如保單價值下跌或銀行調整條款，銀行可能要求提前還款或追加抵押品。</li>'+
+      '<li><b>匯率風險：</b>如保單貨幣與貸款貨幣或您的收入貨幣不同，須承擔匯率波動的風險。</li>'+
+      '<li><b>計算假設：</b>貸款期間只償還利息，退保時一次過清還本金；保費回贈及各項費用以實際安排為準。</li></ul>'+
+      '<div class="rp-foot">本報告只供參考，並不構成任何保險、投資或借貸的要約或建議。所有數字均為估算，利率、現金價值、紅利及回贈並非保證，一切以保險公司及銀行的正式文件為準。</div></div>';
+
+    rp.innerHTML = h;
+    return '';
+  }
+
+  // 先在畫面顯示報告預覽，再由使用者按鈕列印（避免列印隱藏內容時輸出空白）
+  let oldTitle = null;
+  $('exportPdf').onclick = ()=>{
+    let err;
+    try{ err = buildReport(); }
+    catch(e){ $('rpStatus').textContent = '⚠️ 產生報告時出現錯誤：'+((e && e.message) || e); return; }
+    $('rpStatus').textContent = err ? '⚠️ '+err+'，然後再匯出報告。' : '';
+    if(err) return;
+    const d = new Date(), c = $('rpClient').value.trim();
+    oldTitle = document.title;                      // 列印畫面以網頁標題作為 PDF 預設檔名
+    document.title = '保費融資方案摘要'+(c ? '_'+c : '')+'_'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    document.body.classList.add('rpmode');
+    window.scrollTo(0,0);
+  };
+  $('rpPrint').onclick = ()=> window.print();
+  $('rpBack').onclick = ()=>{
+    document.body.classList.remove('rpmode');
+    if(oldTitle){ document.title = oldTitle; oldTitle = null; }
+    $('exportPdf').scrollIntoView({block:'center'});
+  };
 
   /* ---------- 事件 ---------- */
   $('scSeg').addEventListener('click', e=>{ const t = e.target.closest('button'); if(t){ scenario=+t.dataset.i; update(); }});
