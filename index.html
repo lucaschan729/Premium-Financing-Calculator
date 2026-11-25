@@ -187,12 +187,12 @@
       body.rpmode #report{padding:20px 16px;margin:10px 8px 30px}
       #report .rp-t{font-size:17pt}
     }
-    @page{size:A4;margin:12mm}
+    /* 頁邊距設為 0：瀏覽器沒有位置加入日期時間、網址等頁首頁尾；邊距改由報告本身的 padding 提供 */
+    @page{size:A4;margin:0}
     @media print{
       html,body{background:#fff;height:auto!important;overflow:visible!important}
       #rpBar,body.rpmode #rpBar{display:none!important;position:static!important}
-      /* 頂部預留空位，避免標題被裁去 */
-      body.rpmode #report{max-width:none;margin:0;padding:8mm 0 0;border-radius:0;box-shadow:none;overflow:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      body.rpmode #report{max-width:none;margin:0;padding:14mm 12mm 12mm;border-radius:0;box-shadow:none;overflow:visible;-webkit-print-color-adjust:exact;print-color-adjust:exact}
       #report .rp-tw{overflow:visible}
     }
   </style>
