@@ -6,33 +6,43 @@
   <title>保費融資計算器｜多利率情境回報分析</title>
   <style>
     :root{
-      --navy:#0f2540; --navy2:#1b3a5f; --gold:#c9a24b; --gold2:#e8d3a0;
-      --bg:#f3f5f9; --card:#ffffff; --line:#e3e8f0; --text:#1c2733; --muted:#6b7a8c;
+      --navy:#141a2e; --navy2:#252e4d; --gold:#e8a33d; --gold-d:#c47f22; --gold2:#f3cf8a;
+      --bg:#f1f3f8; --card:#ffffff; --line:#e3e7f0; --text:#1b2233; --muted:#6c778c;
       --pos:#0a8f5b; --neg:#d6453d; --soft:#f6f8fc;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:-apple-system,"PingFang HK","Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+    body{font-family:-apple-system,"PingFang HK","PingFang SC","Microsoft JhengHei","Microsoft YaHei","Noto Sans TC","Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
 
     /* ---------- 頁首 ---------- */
-    header{background:radial-gradient(circle at 88% -30%,rgba(201,162,75,.38),transparent 46%),linear-gradient(135deg,#0b1c33,var(--navy2));color:#fff;padding:40px 20px 76px}
+    header{position:relative;overflow:hidden;background:linear-gradient(135deg,#0c1322 0%,#161d33 55%,#2a3252 100%);color:#fff;padding:24px 20px 104px}
+    header::before{content:"";position:absolute;right:-200px;top:-300px;width:560px;height:560px;border-radius:50%;background:rgba(232,163,61,.10);border:90px solid rgba(232,163,61,.17);pointer-events:none}
+    header::after{content:"";position:absolute;left:-150px;bottom:-270px;width:460px;height:460px;border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none}
     header .inner,main{max-width:1180px;margin:0 auto}
-    header h1{font-size:30px;letter-spacing:1px;font-weight:700}
-    header h1 span{color:var(--gold2);font-weight:400;font-size:.7em;margin-left:6px;letter-spacing:.5px}
-    main{padding:0 16px 40px;margin-top:-48px}
+    header .inner{position:relative;z-index:1}
+    .top{display:flex;justify-content:flex-end;margin-bottom:6px}
+    .lang{display:inline-flex;padding:4px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+    .lang button{border:0;background:transparent;color:#d9deea;font-size:14px;font-weight:600;padding:7px 18px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.15s}
+    .lang button:hover{color:#fff}
+    .lang button.on{background:var(--gold);color:#1a1f33;box-shadow:0 2px 8px rgba(232,163,61,.45)}
+    .eyebrow{font-size:12px;letter-spacing:5px;color:#f2c25c;font-weight:500;margin-bottom:8px}
+    header h1{font-size:40px;letter-spacing:2px;font-weight:800;line-height:1.25}
+    header h1 em{font-style:normal;color:var(--gold)}
+    .lead{margin-top:14px;max-width:660px;font-size:15.5px;line-height:1.75;color:#c6ccdb}
+    main{padding:0 16px 40px;margin-top:-64px;position:relative;z-index:2}
 
     /* ---------- 卡片 ---------- */
-    .card{background:var(--card);border-radius:16px;box-shadow:0 1px 2px rgba(15,37,64,.05),0 8px 24px rgba(15,37,64,.07);padding:26px;margin-bottom:22px}
-    .card h2{font-size:18px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;color:var(--navy);padding-bottom:14px;border-bottom:1px solid var(--line)}
+    .card{background:var(--card);border-radius:22px;border:1px solid #e6e9f2;box-shadow:0 1px 2px rgba(20,26,46,.04),0 12px 32px rgba(20,26,46,.08);padding:28px;margin-bottom:22px}
+    .card h2{font-size:20px;display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;color:var(--navy);padding-bottom:16px;border-bottom:1px solid var(--line);font-weight:800}
     .card h3{font-size:13px;color:var(--navy);margin:24px 0 12px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:.5px}
     .card h3::before{content:"";width:4px;height:14px;border-radius:2px;background:var(--gold)}
-    .num{background:linear-gradient(135deg,var(--gold),#b28a35);color:#fff;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(201,162,75,.4)}
-    .chip{font-size:12px;font-weight:600;color:var(--navy2);background:#eef2f8;padding:3px 12px;border-radius:99px;margin-left:auto}
+    .num{background:linear-gradient(145deg,#eeae48,#b9742a);color:#fff;width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0;box-shadow:0 6px 14px rgba(196,127,34,.35)}
+    .chip{font-size:12px;font-weight:600;color:var(--navy2);background:#eef1f8;padding:4px 12px;border-radius:99px;margin-left:auto}
     .chip:empty{display:none}
 
     /* ---------- 步驟 ---------- */
     .step{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:30px 0 14px;padding-top:22px;border-top:1px dashed var(--line)}
     .step.first{margin-top:0;padding-top:0;border-top:0}
-    .step .tag{font-size:11.5px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--navy);padding:3px 10px;border-radius:99px}
+    .step .tag{font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--gold2);background:var(--navy);padding:3px 11px;border-radius:99px}
     .step b{font-size:15.5px;color:var(--navy)}
     .step small{font-size:12.5px;color:var(--muted)}
     .step .fx,.step .seg{margin-left:auto}
@@ -40,44 +50,45 @@
 
     /* ---------- 表單 ---------- */
     .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
-    .seg{display:inline-flex;background:#eef1f6;border-radius:11px;padding:4px;flex-wrap:wrap;gap:2px}
-    .seg button{border:0;background:transparent;padding:8px 16px;border-radius:8px;font-size:14px;cursor:pointer;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+    .seg{display:inline-flex;background:#eceff6;border-radius:12px;padding:4px;flex-wrap:wrap;gap:2px}
+    .seg button{border:0;background:transparent;padding:8px 16px;border-radius:9px;font-size:14px;cursor:pointer;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s;font-family:inherit}
     .seg button:hover{color:var(--navy)}
-    .seg button.on{background:var(--navy);color:#fff;box-shadow:0 2px 6px rgba(15,37,64,.25)}
+    .seg button.on{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(20,26,46,.28)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
     label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;font-weight:500}
-    input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;color:var(--text);background:#fff;font-variant-numeric:tabular-nums;font-family:inherit;transition:border-color .15s,box-shadow .15s}
-    input::placeholder{color:#b3bdca;font-weight:400;font-size:13px}
-    input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
-    input[type=checkbox]{width:16px;height:16px;padding:0;accent-color:var(--navy)}
-    .in{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s,box-shadow .15s;overflow:hidden}
-    .in:hover{border-color:#c9d3e2}
-    .in:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,75,.2)}
+    input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:15px;color:var(--text);background:#fff;font-variant-numeric:tabular-nums;font-family:inherit;transition:border-color .15s,box-shadow .15s}
+    input::placeholder{color:#b3bccb;font-weight:400;font-size:13px}
+    input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,163,61,.22)}
+    input[type=checkbox]{width:16px;height:16px;padding:0;accent-color:var(--gold-d)}
+    .in{display:flex;align-items:center;border:1px solid var(--line);border-radius:11px;background:#fff;transition:border-color .15s,box-shadow .15s;overflow:hidden}
+    .in:hover{border-color:#c9d1e0}
+    .in:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,163,61,.22)}
     .in input{border:0;flex:1;min-width:0;background:transparent;font-weight:600}
     .in input:focus{box-shadow:none}
     .in span{font-size:13px;color:var(--muted);padding:0 12px;background:var(--soft);align-self:stretch;display:flex;align-items:center;font-weight:600}
     .in span.pre{border-right:1px solid var(--line)}
     .in span.suf{border-left:1px solid var(--line)}
-    .calc{display:block;font-size:12.5px;color:#a8842f;font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums}
+    .calc{display:block;font-size:12.5px;color:var(--gold-d);font-weight:700;margin-top:6px;font-variant-numeric:tabular-nums}
     .calc:empty{display:none}
     .fx{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
     .fx input{width:76px;padding:7px 9px;text-align:center}
-    .rate{border-radius:12px;padding:14px;background:var(--soft);border:1px solid var(--line);border-top:3px solid var(--c)}
+    .rate{border-radius:14px;padding:14px;background:var(--soft);border:1px solid var(--line);border-top:3px solid var(--c)}
     .rate label{color:var(--c);font-weight:700}
     .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
-    .d0{background:#0a8f5b}.d1{background:#c9a24b}.d2{background:#d6453d}
+    .d0{background:#0a8f5b}.d1{background:#e8a33d}.d2{background:#d6453d}
 
     /* ---------- KPI ---------- */
     .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:22px}
-    .kpi{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+    .kpi{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
     .kpi small{color:var(--muted);font-size:12px;display:block;margin-bottom:2px}
     .kpi b{font-size:20px;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
-    .kpi.hl{background:linear-gradient(135deg,#0b1c33,var(--navy2));border:0;box-shadow:0 6px 16px rgba(15,37,64,.25)}
-    .kpi.hl small{color:#c5d2e3}.kpi.hl b{color:var(--gold2)}
+    .kpi.hl{position:relative;overflow:hidden;background:linear-gradient(135deg,#0c1322,#2a3252);border:0;box-shadow:0 8px 20px rgba(20,26,46,.28)}
+    .kpi.hl::after{content:"";position:absolute;right:-34px;top:-34px;width:96px;height:96px;border-radius:50%;border:16px solid rgba(232,163,61,.22)}
+    .kpi.hl small{color:#c6ccdb}.kpi.hl b{color:var(--gold)}
 
     /* ---------- 上載 ---------- */
-    .drop{border:2px dashed #c3cede;border-radius:14px;padding:26px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
-    .drop:hover,.drop.over{border-color:var(--gold);background:#fffaf0;transform:translateY(-1px)}
+    .drop{border:2px dashed #c6cedf;border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;background:var(--soft);margin-bottom:12px;transition:.18s}
+    .drop:hover,.drop.over{border-color:var(--gold);background:#fff8ec;transform:translateY(-1px)}
     .drop.done{border-style:solid;border-color:#9fd6bd;background:#f1faf5;padding:16px 20px}
     .drop .ico{font-size:30px;display:block;margin-bottom:4px}
     .drop.done .ico{font-size:22px}
@@ -86,50 +97,50 @@
     .exopts{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px}
     .exopts label{display:flex;align-items:center;gap:6px;margin:0;cursor:pointer}
     .exopts input[type=text]{width:60px;padding:6px 8px;text-align:center}
-    .status{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
+    .status{font-size:13px;padding:10px 14px;border-radius:10px;margin-bottom:14px;background:#eef6f1;border-left:4px solid var(--pos);color:#1d5a40;white-space:pre-line}
     .status.err{background:#fdeeee;border-left-color:var(--neg);color:#8a2a25}
     .status:empty{display:none}
 
-    /* ---------- 保單資料 + 現金價值（左右並排） ---------- */
+    /* ---------- 保單資料 + 現金價值 ---------- */
     .split{display:grid;grid-template-columns:minmax(260px,1fr) minmax(340px,1.5fr);gap:22px;align-items:start}
     .split .grid{grid-template-columns:1fr}
     .split h3{margin-top:0}
     .split h3 .btn{margin-left:auto;padding:5px 12px;font-size:12px}
 
     /* ---------- 表格 ---------- */
-    .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px}
+    .scroll{overflow:auto;border:1px solid var(--line);border-radius:14px}
     table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
     th,td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
     tbody tr:last-child td{border-bottom:0}
-    th{background:#f1f4f9;color:var(--navy);font-weight:700;font-size:13px}
+    th{background:#f0f3f9;color:var(--navy);font-weight:700;font-size:13px}
     .scroll thead th{position:sticky;top:0;z-index:2}
     th:first-child,td:first-child{text-align:center}
-    th.y{background:#fbf1cf;color:#6b5514}
+    th.y{background:#fdefd3;color:#7a5312}
     tbody tr:hover td{background:#fafbfd}
     .stick td:first-child{position:sticky;left:0;z-index:1;background:#fff;border-right:1px solid var(--line)}
     .stick thead th:first-child{left:0;z-index:3;border-right:1px solid var(--line)}
     .stick tbody tr:hover td:first-child{background:#fafbfd}
-    .stick tr.sel td{background:#f1f6fd}
+    .stick tr.sel td{background:#fff8ec}
     .stick tr.be td{background:#eefaf4}
     #cmpTable td:first-child{text-align:left}
     #cmpTable td:first-child b{display:inline-flex;align-items:center;gap:8px}
-    .stick td.hint,#cmpTable td.hint{text-align:center;color:#9aa7b6;padding:28px;border-right:0;position:static}
+    .stick td.hint,#cmpTable td.hint{text-align:center;color:#9aa5b8;padding:28px;border-right:0;position:static}
     #svTable td{padding:3px 6px}
     #svTable td:first-child{color:var(--muted);font-weight:600}
     #svTable input{border:1px solid transparent;text-align:right;padding:7px 8px;background:transparent}
     #svTable input:hover{border-color:var(--line)}
     #svTable input:focus{background:#fff;border-color:var(--gold)}
     .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--pos);padding:1px 7px;border-radius:99px;margin-left:6px;vertical-align:middle}
-    .btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600;transition:.15s;font-family:inherit}
-    .btn:hover{border-color:var(--gold);color:#a8842f;background:#fffaf0}
-    .btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);padding:11px 22px;font-size:14px}
-    .btn.primary:hover{background:var(--navy2);color:#fff}
-    .btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);padding:10px 22px;font-size:14px}
-    .btn.gold:hover{background:#b28a35;color:#fff}
+    .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--navy);font-weight:600;transition:.15s;font-family:inherit}
+    .btn:hover{border-color:var(--gold);color:var(--gold-d);background:#fff8ec}
+    .btn.primary{background:linear-gradient(135deg,#eeae48,#d18a2a);color:#1a1f33;border:0;padding:13px 26px;font-size:15px;font-weight:700;border-radius:12px;box-shadow:0 6px 16px rgba(196,127,34,.35)}
+    .btn.primary:hover{filter:brightness(1.06);color:#1a1f33;transform:translateY(-1px)}
+    .btn.gold{background:var(--gold);color:#1a1f33;border-color:var(--gold);padding:10px 22px;font-size:14px;font-weight:700}
+    .btn.gold:hover{background:#f0b558;color:#1a1f33}
     .note{font-size:12.5px;color:var(--muted)}
     .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
     .sub{display:block;font-size:12px;font-weight:400;color:var(--muted)}
-    details{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:4px 16px;background:var(--soft)}
+    details{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:4px 16px;background:var(--soft)}
     details[open]{padding-bottom:16px}
     summary{cursor:pointer;font-weight:600;color:var(--navy);padding:10px 0;font-size:14px}
     details .scroll{background:#fff}
@@ -140,24 +151,22 @@
     #report,#rpBar{display:none}
     body.rpmode>header,body.rpmode>main{display:none}
     body.rpmode #rpBar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;position:sticky;top:0;z-index:10;background:var(--navy);padding:10px 16px}
-    #rpBar span{font-size:12.5px;color:#c5d2e3}
-    body.rpmode #report{display:block;background:#fff;max-width:820px;margin:18px auto 40px;padding:36px 40px;border-radius:6px;box-shadow:0 8px 24px rgba(15,37,64,.12);overflow:hidden}
-    /* 頁首以表格方式排版（列印時較 flex 穩定） */
+    #rpBar span{font-size:12.5px;color:#c6ccdb}
+    body.rpmode #report{display:block;background:#fff;max-width:820px;margin:18px auto 40px;padding:36px 40px;border-radius:6px;box-shadow:0 8px 24px rgba(20,26,46,.12);overflow:hidden}
     #report .rp-head{display:table;width:100%;border-bottom:3px solid var(--gold);margin-bottom:12px}
     #report .rp-head>div{display:table-cell;vertical-align:bottom;padding-bottom:10px}
     #report .rp-t{font-size:22pt;font-weight:700;color:var(--navy);letter-spacing:1px;line-height:1.3}
-    #report .rp-s{font-size:9pt;color:var(--muted);letter-spacing:1.5px;margin-top:2px}
-    #report .rp-head>.rp-meta{font-size:9pt;text-align:right;line-height:1.7;color:#44536a;padding-left:12px}
+    #report .rp-s{font-size:9pt;color:var(--gold-d);letter-spacing:2.5px;margin-top:2px}
+    #report .rp-head>.rp-meta{font-size:9pt;text-align:right;line-height:1.7;color:#44506a;padding-left:12px}
     #report .rp-h{font-size:12pt;font-weight:700;color:var(--navy);margin:16px 0 8px;padding-left:8px;border-left:4px solid var(--gold);line-height:1.3}
     #report .rp-p{font-size:10pt;line-height:1.75;margin-bottom:8px}
     #report .rp-n{font-size:8.5pt;color:var(--muted);line-height:1.6;margin-top:6px}
     #report .rp-leg{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:9pt;margin-top:6px}
-    /* 金額卡：空間不足時自動換行，不會超出頁面 */
     #report .rp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin-top:10px}
     #report .rp-k{border:1px solid var(--line);border-radius:6px;padding:7px 8px;background:var(--soft);min-width:0}
     #report .rp-k small{display:block;font-size:7.5pt;color:var(--muted);line-height:1.4}
     #report .rp-k b{display:block;font-size:10pt;color:var(--navy);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.4}
-    #report .rp-k.hl{border:1.5px solid var(--gold);background:#fdf6e3}
+    #report .rp-k.hl{border:1.5px solid var(--gold);background:#fdf3df}
     #report .rp-rates{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
     #report .rp-r{border:1px solid var(--line);border-top:3px solid var(--c);border-radius:6px;padding:8px 10px;break-inside:avoid;min-width:0}
     #report .rp-r .nm{font-size:9pt;font-weight:700;color:var(--c);display:block}
@@ -174,18 +183,15 @@
     #report th{font-size:8pt;border-bottom:1.5px solid var(--navy)}
     #report tr{break-inside:avoid}
     #report tbody tr:hover td{background:transparent}
-
-    /* 逐年明細表 */
     #report .rp-dt{margin-top:10px;border:1px solid var(--line)}
     #report .rp-dt th{text-align:center;padding:5px 6px;border-bottom:0;color:var(--navy)}
     #report .rp-dt th.hd{background:var(--navy);color:#fff;vertical-align:middle;font-size:8.5pt}
     #report .rp-dt th.sc{color:#fff;font-size:8.5pt}
     #report .rp-dt td.yr{font-weight:700;color:var(--navy);text-align:center}
-    #report .rp-dt .gl{border-left:1px solid #cfd7e3}
+    #report .rp-dt .gl{border-left:1px solid #cfd6e3}
     #report .rp-dt tbody tr:nth-child(even) td{background:#f7f9fc}
     #report .rp-dt tbody tr td.bez{background:#dff3e8;font-weight:700}
     #report .rp-key{display:inline-block;width:10px;height:10px;border-radius:2px;background:#dff3e8;border:1px solid #b5dfc8;vertical-align:-1px;margin-right:4px}
-
     #report .rp-avoid{break-inside:avoid}
     #report ul{margin:0;padding:0;list-style:none}
     #report li{font-size:9pt;line-height:1.65;margin-bottom:3px;padding-left:12px;position:relative}
@@ -197,8 +203,12 @@
       .split .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
     }
     @media(max-width:600px){
-      header{padding:28px 16px 66px}header h1{font-size:23px}header h1 span{display:block;margin:2px 0 0}
-      .card{padding:18px}.step .seg{margin-left:0}
+      header{padding:18px 18px 92px}
+      header h1{font-size:30px;letter-spacing:1px}
+      .eyebrow{font-size:10.5px;letter-spacing:4px}
+      .lead{font-size:14px}
+      .lang button{padding:6px 14px;font-size:13px}
+      .card{padding:18px;border-radius:18px}.step .seg{margin-left:0}
       .grid{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
       .kpi b{font-size:17px}th,td{padding:8px 10px}
     }
@@ -206,7 +216,6 @@
       body.rpmode #report{padding:20px 16px;margin:10px 8px 30px}
       #report .rp-t{font-size:17pt}
     }
-    /* 頁邊距設為 0：瀏覽器沒有位置加入日期時間、網址等頁首頁尾；邊距改由報告本身的 padding 提供 */
     @page{size:A4;margin:0}
     @media print{
       html,body{background:#fff;height:auto!important;overflow:visible!important}
@@ -219,16 +228,23 @@
   <body>
   <header>
     <div class="inner">
-      <h1>保費融資計算器<span>Premium Financing</span></h1>
+      <div class="top">
+        <div class="lang noi18n" id="langSeg">
+          <button data-lang="tc" class="on">繁體</button>
+          <button data-lang="sc">简体</button>
+        </div>
+      </div>
+      <div class="eyebrow noi18n">PREMIUM FINANCING CALCULATOR</div>
+      <h1>保費融資<em>計算器</em></h1>
+      <p class="lead">上載保單建議書（繁體或簡體），自動讀取總保費及逐年現金價值，一次比較低、中、高三個利率情境的回報，並匯出客戶報告。</p>
     </div>
   </header>
 
   <main>
-    <!-- 1 保單、現金價值與融資設定（合併） -->
+    <!-- 1 保單、現金價值與融資設定 -->
     <section class="card">
       <h2><span class="num">1</span>保單與融資設定</h2>
 
-      <!-- 第一步：上載 -->
       <div class="step first">
         <span class="tag">第一步</span><b>上載保單建議書</b>
         <small>選填・自動填寫總保費、首日退保價值及逐年現金價值；亦可略過，直接在下方手動輸入</small>
@@ -236,7 +252,7 @@
       <div class="drop" id="drop">
         <span class="ico" id="dropIco">📄</span>
         <b id="dropTitle">點擊此處選擇檔案，或直接將檔案拖放至此</b>
-        <small>支援 PDF / Excel / CSV / TXT ・ 檔案只會在您的裝置內解析，不會上傳</small>
+        <small>支援 PDF / Excel / CSV / TXT（繁體或簡體建議書均可）・ 檔案只會在您的裝置內解析，不會上傳</small>
         <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt" hidden>
       </div>
       <div class="exopts">
@@ -245,7 +261,6 @@
       </div>
       <div class="status" id="exStatus"></div>
 
-      <!-- 第二步：保單資料 + 現金價值 -->
       <div class="step">
         <span class="tag">第二步</span><b>核對保單資料及現金價值</b>
         <div class="seg" id="curSeg">
@@ -276,7 +291,6 @@
         </div>
       </div>
 
-      <!-- 第三步：融資 -->
       <div class="step">
         <span class="tag">第三步</span><b>融資安排及利率情境</b>
       </div>
@@ -288,7 +302,7 @@
       </div>
       <div class="grid" style="margin-top:16px">
         <div class="rate" style="--c:#0a8f5b"><label>情境 A・低</label><div class="in"><input id="r1" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
-        <div class="rate" style="--c:#b28a35"><label>情境 B・中</label><div class="in"><input id="r2" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
+        <div class="rate" style="--c:#c47f22"><label>情境 B・中</label><div class="in"><input id="r2" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
         <div class="rate" style="--c:#d6453d"><label>情境 C・高</label><div class="in"><input id="r3" inputmode="decimal" placeholder="請輸入"><span class="suf">%</span></div></div>
       </div>
 
@@ -314,10 +328,9 @@
         <div class="seg" id="scSeg"></div>
       </div>
       <div class="kpis" style="margin:0 0 18px">
-        <div class="kpi"><small>年利息</small><b id="rYear">—</b></div>
-        <div class="kpi"><small>月利息</small><b id="rMonth">—</b></div>
-        <div class="kpi hl"><small>最早回本（已填寫年份中）</small><b id="rBE">—</b></div>
-        <div class="kpi"><small>最後一年 IRR</small><b id="rIrr">—</b></div>
+        <div class="kpi hl"><small>年利息</small><b id="rYear">—</b></div>
+        <div class="kpi hl"><small>月利息</small><b id="rMonth">—</b></div>
+        <div class="kpi"><small>最早回本（已填寫年份中）</small><b id="rBE">—</b></div>
       </div>
       <div class="scroll stick" style="max-height:560px">
         <table id="resTable">
@@ -338,7 +351,7 @@
       <h2><span class="num">4</span>匯出客戶報告</h2>
       <div class="toolbar" style="margin:0">
         <button class="btn primary" id="exportPdf">預覽及匯出 PDF 報告</button>
-        <span class="note">按下後會先顯示報告預覽，確認內容後再按「列印 / 儲存為 PDF」。</span>
+        <span class="note">按下後會先顯示報告預覽，確認內容後再按「列印 / 儲存為 PDF」。報告語言與頁面右上角所選的繁體／簡體一致。</span>
       </div>
       <div class="status err" id="rpStatus" style="margin:14px 0 0"></div>
     </section>
@@ -367,7 +380,62 @@
   <script>
   const $ = id => document.getElementById(id);
   const INIT_ROWS = 10;
-  let cur = 'USD', scenario = 0;
+  const BASE_TITLE = '保費融資計算器｜多利率情境回報分析';
+  let cur = 'USD', scenario = 0, lang = 'tc';
+
+  /* ---------- 繁簡轉換 ---------- */
+  // 先換用語，再逐字轉換
+  const PHRASES = [['檔案','文件'],['上載','上传'],['匯出','导出'],['匯入','导入'],['列印','打印'],['儲存','保存'],
+    ['網絡','网络'],['連線','连接'],['程式庫','程序库'],['裝置','设备'],['支援','支持'],['貼上','粘贴'],['設定','设置'],['一次過','一次性']];
+  const T2S = {};
+  ('費费 資资 計计 報报 載载 單单 議议 書书 選选 動动 寫写 總总 價价 現现 過过 輸输 點点 擊击 處处 擇择 檔档 將将 會会 裝装 內内 傳传 匯汇 滙汇 '+
+   '時时 對对 贈赠 沒没 紅红 實实 請请 證证 預预 從从 複复 製制 後后 貼贴 貸贷 銀银 數数 續续 額额 無无 優优 槓杠 桿杆 較较 細细 還还 餘余 淨净 '+
+   '開开 欄栏 於于 該该 戶户 覽览 顯显 確确 認认 儲储 為为 說说 與与 責责 聲声 償偿 當当 瀏浏 檢检 網网 絡络 連连 線线 試试 屬属 掃扫 圖图 讀读 '+
+   '個个 設设 貨货 幣币 換换 經经 齡龄 標标 碼码 護护 敗败 際际 約约 間间 須须 佔占 綠绿 項项 風风 險险 並并 隨随 場场 減减 虧亏 損损 僅仅 繳缴 '+
+   '條条 調调 擔担 準准 參参 構构 產产 錯错 誤误 體体 簡简 頁页 種种 兩两 發发 應应 據据 歲岁 觀观 樂乐 驟骤 豐丰 東东 亞亚 華华 僑侨 創创 興兴 '+
+   '國国 農农 業业 眾众 財财 務务 聯联 導导 轉转 語语 稱称 記记 結结 訂订 長长 門门 見见 馬马 萬万 億亿 雙双 幾几 樣样 這这 來来 別别 讓让 買买 '+
+   '賣卖 關关 閉闭 問问 題题 視视 劃划 壽寿 終终 誠诚 衛卫 環环').split(' ').forEach(p=>{ T2S[p[0]] = p[1]; });
+  const toSC = s => { PHRASES.forEach(p=>{ s = s.split(p[0]).join(p[1]); }); let o = ''; for(const ch of s) o += T2S[ch] || ch; return o; };
+  const loc = s => lang==='sc' ? toSC(s) : s;
+
+  function locText(n){
+    const p = n.parentElement;
+    if(!p || p.closest('script,style,.noi18n')) return;
+    if(lang==='sc'){
+      if(n._sc !== n.nodeValue){ n._tc = n.nodeValue; n._sc = toSC(n._tc); if(n._sc !== n._tc) n.nodeValue = n._sc; }
+    } else if(n._tc != null && n.nodeValue === n._sc){ n.nodeValue = n._tc; }
+  }
+  function localize(root){
+    if(root.nodeType === 3){ locText(root); return; }
+    if(root.nodeType !== 1) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), list = [];
+    while(w.nextNode()) list.push(w.currentNode);
+    list.forEach(locText);
+    const phs = [...root.querySelectorAll('[placeholder]')];
+    if(root.hasAttribute('placeholder')) phs.push(root);
+    phs.forEach(el=>{
+      if(el.dataset.ph == null) el.dataset.ph = el.getAttribute('placeholder');
+      el.setAttribute('placeholder', loc(el.dataset.ph));
+    });
+  }
+  // 自動轉換其後動態產生的文字（表格、提示、報告等）
+  const mo = new MutationObserver(ms=>{
+    if(lang !== 'sc') return;
+    mo.disconnect();
+    ms.forEach(m=> m.addedNodes.forEach(n=>{ if(n.isConnected) localize(n); }));
+    watch();
+  });
+  const watch = () => mo.observe(document.body, {childList:true, subtree:true});
+  function setLang(l){
+    lang = l === 'sc' ? 'sc' : 'tc';
+    mo.disconnect();
+    document.documentElement.lang = lang==='sc' ? 'zh-Hans' : 'zh-HK';
+    [...$('langSeg').children].forEach(b=> b.classList.toggle('on', b.dataset.lang===lang));
+    localize(document.body);
+    if(!document.body.classList.contains('rpmode')) document.title = loc(BASE_TITLE);
+    try{ localStorage.setItem('pf_lang', lang); }catch(e){}
+    watch();
+  }
 
   const num = v => { const n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? null : n; };
   const sym = () => cur === 'HKD' ? 'HK$' : 'US$';
@@ -376,17 +444,16 @@
   const fmtIn = v => v == null ? '' : Math.round(v).toLocaleString('en-US');
   const cls = v => v == null ? '' : v >= 0 ? 'pos' : 'neg';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  // 設定貨幣（不作換算）
   function setCur(c){ cur = c; [...$('curSeg').children].forEach(b=>b.classList.toggle('on', b.dataset.cur===c)); }
 
   /* ---------- 現金價值表 ---------- */
   const tbody = document.querySelector('#svTable tbody');
   function addRow(g, e){
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td></td><td><input class="money" inputmode="decimal"></td><td><input class="money" inputmode="decimal"></td>';
-    const ins = tr.querySelectorAll('input');
+    const row = document.createElement('tr');
+    row.innerHTML = '<td></td><td><input class="money" inputmode="decimal"></td><td><input class="money" inputmode="decimal"></td>';
+    const ins = row.querySelectorAll('input');
     ins[0].value = fmtIn(g ?? null); ins[1].value = fmtIn(e ?? null);
-    tbody.appendChild(tr); renumber();
+    tbody.appendChild(row); renumber();
   }
   function renumber(){ [...tbody.rows].forEach((r,i)=> r.cells[0].textContent = i+1); }
   function getRows(){
@@ -410,10 +477,11 @@
     update();
   });
 
-  /* ---------- 檔案提取 ---------- */
+  /* ---------- 檔案提取（支援繁體及簡體建議書） ---------- */
   const PDFJS = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/';
   const XLSX_URL = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
-  const SKIP = /悲觀|樂觀|pessimistic|optimistic/i;
+  const SKIP = /悲觀|樂觀|悲观|乐观|pessimistic|optimistic/i;
+  const isAgeWord = s => s==='歲' || s==='岁';
   const libs = {};
   const loadScript = src => libs[src] || (libs[src] = new Promise((ok,err)=>{
     const s = document.createElement('script'); s.src = src; s.onload = ok;
@@ -421,7 +489,6 @@
     document.head.appendChild(s);
   }));
 
-  // 讀取檔案：統一輸出 pages -> lines -> tokens
   async function readPdf(file){
     await loadScript(PDFJS+'build/pdf.min.js');
     pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS+'build/pdf.worker.min.js';
@@ -433,7 +500,7 @@
         .map(i=>({s:i.str.trim(), x:i.transform[4], y:i.transform[5]}))
         .sort((a,b)=> b.y-a.y || a.x-b.x);
       const lines = []; let L = null;
-      items.forEach(it=>{                       // 以 y 座標將文字還原成「行」
+      items.forEach(it=>{
         if(!L || Math.abs(L.y-it.y) > 3){ L = {y:it.y, its:[]}; lines.push(L); }
         L.its.push(it);
       });
@@ -449,9 +516,8 @@
   }
   const readText = t => t.split('\f').map(p=> p.replace(/\r/g,'').split('\n').map(l=> l.trim().split(/\s+/).filter(Boolean)));
 
-  // 字元分類：年齡（65歲）／小整數（年度或年齡）／金額／負數（略過）／文字
   function tok(t){
-    const m = t.match(/^(\d{1,3})歲$/); if(m) return {age:+m[1]};
+    const m = t.match(/^(\d{1,3})[歲岁]$/); if(m) return {age:+m[1]};
     if(!/^\(?-?(US|HK)?\$?[\d,]*\.?\d+\)?$/i.test(t)) return null;
     if(/^\(|-/.test(t)) return {skip:true};
     const v = parseFloat(t.replace(/[^0-9.]/g,''));
@@ -459,7 +525,7 @@
     return {v};
   }
   function prep(tokens){
-    const t = []; tokens.forEach(s=>{ if(s==='歲' && t.length) t[t.length-1] += '歲'; else t.push(s); });
+    const t = []; tokens.forEach(s=>{ if(isAgeWord(s) && t.length) t[t.length-1] += '歲'; else t.push(s); });
     const r = {smalls:[], age:null, nums:[], bad:0};
     t.forEach(s=>{ const k = tok(s);
       if(!k) r.bad++; else if(k.age) r.age = k.age; else if(k.small) r.smalls.push(k.small); else if(!k.skip) r.nums.push(k.v); });
@@ -467,7 +533,6 @@
   }
   const isCand = r => r.bad<=1 && (r.age!=null || r.smalls.length) && r.nums.length;
 
-  // 分析一行：尋找「保證 + 非保證 = 總額」，取總額最小的一組（退保發還金額 ≤ 身故賠償）
   function analyze(r, P, simple){
     const n = r.nums, tri = [];
     for(let i=0;i<n.length;i++) for(let j=i+1;j<n.length;j++) for(let k=0;k<n.length;k++)
@@ -476,13 +541,13 @@
     if(tri.length){
       const minT = Math.min(...tri.map(x=>x.t));
       let c = tri.filter(x=>x.t===minT);
-      const noP = c.filter(x=>x.a!==P && x.b!==P);      // 排除「保費 + 收支比對 = 總額」的巧合
+      const noP = c.filter(x=>x.a!==P && x.b!==P);
       if(noP.length) c = noP;
       const {a,b,t} = c[0];
       let g = null;
       if(a===0 || b===0) g = Math.max(a,b);
       else{
-        const others = tri.filter(x=>x.t>minT);          // 身故賠償組合會共用同一個非保證金額
+        const others = tri.filter(x=>x.t>minT);
         const sa = others.some(x=>x.a===a||x.b===a), sb = others.some(x=>x.a===b||x.b===b);
         if(sa!==sb) g = sa ? b : a;
       }
@@ -499,10 +564,9 @@
     const cnt = new Map();
     cands.forEach(r=> new Set(r.nums).forEach(v=>{ if(v) cnt.set(v,(cnt.get(v)||0)+1); }));
     let P = null, best = 0; cnt.forEach((c,v)=>{ if(c>best){ best=c; P=v; } });
-    if(best < cands.length/2) P = null;                 // P = 幾乎每行都出現的數值（繳付保費總額）
+    if(best < cands.length/2) P = null;
     return {rows:cands.map(r=>analyze(r,P,simple)).filter(Boolean), P};
   }
-  // 後備：文字沒有分行（每個數字一行）時，自動推算每列有多少個數字
   function bestChunks(run){
     let best = [];
     for(let k=5;k<=14;k++){
@@ -517,7 +581,7 @@
     const out = [];
     pages.forEach(p=>{
       let run = []; const flush = ()=>{ if(run.length>=10) out.push(...bestChunks(run)); run = []; };
-      p.flat().forEach(s=>{ (tok(s) || s==='歲') ? run.push(s) : flush(); }); flush();
+      p.flat().forEach(s=>{ (tok(s) || isAgeWord(s)) ? run.push(s) : flush(); }); flush();
     });
     return out;
   }
@@ -530,18 +594,16 @@
     if(b.rows.length<3 && isPdf) b = build(lineCands(false), false);
     if(b.rows.length<3){ const s = build(streamCands(pages), false); if(s.rows.length>b.rows.length) b = s; }
 
-    // 投保年齡：由「年度 + 年齡」行推算，用以換算「65歲」這類行
     const cnt = {}; b.rows.forEach(r=>{ if(r.year && r.ageAt){ const d = r.ageAt-r.year; cnt[d] = (cnt[d]||0)+1; } });
     let issue = Object.keys(cnt).sort((x,y)=>cnt[y]-cnt[x])[0]; issue = issue!=null ? +issue : null;
-    if(issue==null){ const m = text.match(/年齡[:：]?\s*(\d{1,3})/); if(m) issue = +m[1]; }
+    if(issue==null){ const m = text.match(/年[齡龄][:：]?\s*(\d{1,3})/); if(m) issue = +m[1]; }
 
     const map = new Map(); let skipped = 0;
     b.rows.forEach(r=>{
       let y = r.year;
       if(!y){ if(issue==null){ skipped++; return; } y = r.ageAt-issue; }
-      if(y>=1 && !map.has(y)) map.set(y, r);            // 同一年度以最先出現的表為準
+      if(y>=1 && !map.has(y)) map.set(y, r);
     });
-    // 保證金額未能確定的行：選取與鄰近年度保證金額最接近的一個
     const ys = [...map.keys()].sort((x,y)=>x-y);
     const fix = order => { let last = null; order.forEach(y=>{ const r = map.get(y);
       if(r.g==null && r.pair && last!=null) r.g = Math.abs(r.pair[0]-last)<=Math.abs(r.pair[1]-last) ? r.pair[0] : r.pair[1];
@@ -568,14 +630,14 @@
 
       let msg = '✅ 已從「'+file.name+'」找到 '+res.map.size+' 個保單年度（第 '+res.years[0]+' 至 '+res.years[res.years.length-1]+' 年），已填入 '+filled+' 個年度（至第 '+maxY+' 年）。';
       if($('exSet').checked){
-        const m = res.text.match(/繕發時之退保發還金額[:：]?\s*\$?\s*([\d,]+)/);
+        const m = res.text.match(/[繕缮][發发][時时]之退保[發发][還还]金[額额][:：]?\s*\$?\s*([\d,]+)/);
         const sv0 = m ? num(m[1]) : (res.map.get(1) ? res.map.get(1).e : null);
         if(res.P){ $('premium').value = fmtIn(res.P); msg += '\n・總保費設定為 '+fmtIn(res.P); }
         if(sv0){ $('sv0').value = fmtIn(sv0); msg += '\n・首日退保價值設定為 '+fmtIn(sv0); }
       }
-      const cm = res.text.match(/保單貨幣[:：]?\s*(美元|港元|港幣)/);
+      const cm = res.text.match(/保[單单][貨货][幣币][:：]?\s*(美元|港元|港[幣币])/);
       if(cm){ const fc = cm[1]==='美元' ? 'USD' : 'HKD';
-        if(fc!==cur){ setCur(fc); msg += '\n・檔案貨幣為'+cm[1]+'，已自動切換貨幣（其他已輸入的金額未經換算）。'; } }
+        if(fc!==cur){ setCur(fc); msg += '\n・檔案貨幣為'+(fc==='USD'?'美元':'港元')+'，已自動切換貨幣（其他已輸入的金額未經換算）。'; } }
       if(res.skipped) msg += '\n・有 '+res.skipped+' 行以年齡標示而未能換算為保單年度，已略過。';
       msg += '\n請在第二步與建議書原文核對數字，然後於第三步填寫融資安排。';
       st.textContent = msg;
@@ -608,7 +670,7 @@
   }
   function base(){
     const pIn=num($('premium').value), sIn=num($('sv0').value), lIn=num($('ltv').value);
-    const ready = pIn!=null && sIn!=null && lIn!=null;       // 三項必填
+    const ready = pIn!=null && sIn!=null && lIn!=null;
     const premium=pIn||0, sv0=sIn||0, ltv=(lIn||0)/100;
     const loan = sv0*ltv, self = premium-loan, once=num($('onceFee').value)||0;
     const rebPct = (num($('rebate').value)||0)/100, rebate = premium*rebPct;
@@ -624,8 +686,8 @@
       const total = row.e ?? row.g, g = row.g ?? total;
       const sv = g+(total-g)*b.div;
       const interest = pay*n;
-      const remain = sv-b.loan-interest;        // 還款後剩餘現金價值
-      const net = remain-b.first;               // 淨收益
+      const remain = sv-b.loan-interest;
+      const net = remain-b.first;
       const cf=[-b.first]; for(let k=1;k<n;k++) cf.push(-pay); cf.push(sv-b.loan-pay);
       return {n, sv, interest, remain, net, roi: b.first>0? net/b.first : null, irr: b.first>0? irr(cf):null, cf};
     });
@@ -643,7 +705,6 @@
     const dot = i => '<i class="dot d'+i+'"></i>';
     const show = v => b.ready ? money(v) : '—';
     document.querySelectorAll('.cs').forEach(e=> e.textContent = sym());
-    // 回贈 % 旁即時顯示優惠金額（只需填寫總保費及回贈 %）
     $('rebateAmt').textContent = b.premium>0 && b.rebPct>0 ? '優惠金額：'+money(b.rebate) : '';
     $('kLoan').textContent = show(b.loan);
     $('kSelf').textContent = show(b.self);
@@ -656,7 +717,6 @@
     const all = b.rates.map(r=> b.ready && r!=null ? calc(b,r,rows).filter(x=>!x.empty) : []);
     const years = rows.map((r,i)=> r.e==null && r.g==null ? null : i+1).filter(y=>y!=null);
 
-    // 利率比較表
     if(!b.ready || !years.length){
       $('cmpTable').innerHTML = '<tbody><tr><td class="hint">'+(b.ready ? MSG2 : MSG1)+'</td></tr></tbody>';
     } else {
@@ -671,7 +731,6 @@
       $('cmpTable').innerHTML = c+'</tbody>';
     }
 
-    // 情境按鈕
     $('scSeg').innerHTML = names.map((s,i)=>'<button class="'+(i===scenario?'on':'')+'" data-i="'+i+'">'+dot(i)+esc(s)+'</button>').join('');
 
     const rate = b.rates[scenario], hasRate = b.ready && rate!=null;
@@ -681,14 +740,12 @@
     $('rYear').textContent = money(pay);
     $('rMonth').textContent = pay==null ? '—' : money(pay/12);
     $('rBE').textContent = be ? '第 '+be.n+' 年' : (valid.length?'未回本':'—');
-    $('rIrr').textContent = last? pct(last.irr):'—';
 
     document.querySelector('#resTable tbody').innerHTML = valid.length ? valid.map(r=>
       '<tr class="'+(r===be?'be':'')+'"><td>'+r.n+(r===be?'<span class="badge">回本</span>':'')+'</td><td>'+money(r.sv)+'</td><td>'+money(b.loan)+'</td><td>'+money(r.interest)+'</td><td>'+money(r.remain)+
       '</td><td class="'+cls(r.net)+'">'+money(r.net)+'</td><td class="'+cls(r.roi)+'">'+pct(r.roi)+'</td><td class="'+cls(r.irr)+'">'+pct(r.irr)+'</td></tr>'
     ).join('') : '<tr><td colspan="8" class="hint">'+hint+'</td></tr>';
 
-    // 現金流明細
     if(!valid.length){
       $('cfTable').innerHTML = '<tbody><tr><td class="hint">'+hint+'</td></tr></tbody>';
     } else {
@@ -704,7 +761,7 @@
   }
 
   /* ---------- 客戶報告（PDF） ---------- */
-  const COL = ['#0a8f5b','#b28a35','#d6453d'], TINT = ['#e6f4ee','#f8f0dc','#fbe9e7'], LET = ['A','B','C'];
+  const COL = ['#0a8f5b','#c47f22','#d6453d'], TINT = ['#e6f4ee','#fbefd9','#fbe9e7'], LET = ['A','B','C'];
   const sq = c => '<svg width="10" height="10" style="vertical-align:-1px;margin-right:5px"><rect width="10" height="10" rx="2" fill="'+c+'"/></svg>';
 
   function buildReport(){
@@ -723,16 +780,14 @@
     const bank = $('bank').value.trim();
     const lev = b.first>0 ? (b.premium/b.first).toFixed(2) : null;
 
-    // 頁首
     let h = '<div class="rp-head"><div><div class="rp-t">保費融資方案摘要</div><div class="rp-s">PREMIUM FINANCING SUMMARY</div></div><div class="rp-meta">'+
       (bank ? '貸款銀行：'+esc(bank)+'<br>' : '')+'報告日期：'+date+'<br>貨幣：'+(cur==='HKD'?'港元':'美元')+'</div></div>';
 
-    // 一、方案概覽
     h += '<div class="rp-h">一、方案概覽</div><p class="rp-p">本方案以銀行貸款支付部分保費。您實際支付 <b>'+money(b.first)+'</b>，即可持有總保費 <b>'+money(b.premium)+'</b> 的保單'+
       (lev ? '（約 '+lev+' 倍槓桿）' : '')+'。'+(b.rebate>0 ? '當中已扣除保費回贈優惠 <b>'+money(b.rebate)+'</b>（總保費的 '+pct(b.rebPct,1)+'）。' : '')+
       '貸款期間每年只須支付利息，退保時以保單現金價值償還貸款本金。</p>';
     if(b.premium>0){
-      const parts = [['銀行貸款',b.loan,'#0f2540'],['保費回贈',b.rebate,'#c9a24b'],['您的出資',b.self-b.rebate,'#0a8f5b']];
+      const parts = [['銀行貸款',b.loan,'#141a2e'],['保費回贈',b.rebate,'#e8a33d'],['您的出資',b.self-b.rebate,'#0a8f5b']];
       const tot = parts.reduce((s,p)=>s+Math.max(0,p[1]),0) || 1; let x = 0;
       h += '<svg viewBox="0 0 1000 36" style="width:100%;height:auto;display:block;border-radius:6px">'+parts.map(p=>{
         const w = Math.max(0,p[1])/tot*1000, s = '<rect x="'+x.toFixed(1)+'" y="0" width="'+w.toFixed(1)+'" height="36" fill="'+p[2]+'"/>'; x += w; return s; }).join('')+'</svg>'+
@@ -746,12 +801,10 @@
       '<div class="rp-k hl"><small>實付總額</small><b>'+money(b.first)+'</b></div></div>'+
       '<p class="rp-n">貸款總額 = 首日退保價值 '+money(b.sv0)+' × 借貸成數；實付總額 = 自付總額 − 保費回贈'+(b.once>0 ? ' + 一次性手續費 '+money(b.once) : '')+'。</p>';
 
-    // 二、利息支出
     h += '<div class="rp-h">二、每年利息支出</div><div class="rp-rates">'+S.map(s=>
       '<div class="rp-r" style="--c:'+COL[s.i]+'"><span class="nm">'+s.name+'</span><b>每年 '+money(s.pay)+'</b><small>即每月約 '+money(s.pay/12)+'</small></div>').join('')+'</div>'+
       '<p class="rp-n">貸款利率一般為浮動利率，以上為假設情境'+(b.fee>0 ? '，利息已包括每年手續費 '+pct(b.fee)+'（按貸款額計算）' : '')+'。</p>';
 
-    // 三、逐年明細：各情境摘要 + 分組明細表
     const lastY = ys[ys.length-1];
     h += '<div class="rp-avoid"><div class="rp-h">三、逐年明細（假設於該年度退保）</div><div class="rp-rates">'+S.map(s=>{
       const x = s.by.get(lastY);
@@ -769,7 +822,6 @@
       '</tbody></table></div>'+
       '<p class="rp-n"><span class="rp-key"></span>綠色底色 = 該情境最早回本的年度（以已填寫年份計算）。淨收益 = 退保所得 − 償還貸款本金 − 累計利息 − 實付總額。IRR（內部回報率）= 按實付總額及每年利息支出計算的年化回報率。</p>';
 
-    // 四、重要事項
     h += '<div class="rp-avoid"><div class="rp-h">四、重要事項及風險</div><ul>'+
       '<li><b>現金價值並非保證：</b>預期總現金價值包括非保證紅利，實際金額可能較高或較低。本報告以分紅實現率 '+pct(b.div,0)+' 計算。</li>'+
       '<li><b>利率風險：</b>貸款利率可能隨市場上升，令利息支出增加、淨收益減少，甚至出現虧損。以上利率情境僅為假設。</li>'+
@@ -780,11 +832,10 @@
       '<div class="rp-foot">本報告只供參考，並不構成任何保險、投資或借貸的要約或建議。所有數字均為估算，利率、現金價值、紅利及回贈並非保證，一切以保險公司及銀行的正式文件為準。</div></div>';
 
     rp.innerHTML = h;
+    localize(rp);                                   // 報告語言跟隨目前所選的繁體／簡體
     return '';
   }
 
-  // 先在畫面顯示報告預覽，再由使用者按鈕列印（避免列印隱藏內容時輸出空白）
-  let oldTitle = null;
   $('exportPdf').onclick = ()=>{
     let err;
     try{ err = buildReport(); }
@@ -792,24 +843,24 @@
     $('rpStatus').textContent = err ? '⚠️ '+err+'，然後再匯出報告。' : '';
     if(err) return;
     const d = new Date();
-    oldTitle = document.title;                      // 列印畫面以網頁標題作為 PDF 預設檔名
-    document.title = '保費融資方案摘要_'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    // 列印畫面以網頁標題作為 PDF 預設檔名（同樣跟隨繁／簡）
+    document.title = loc('保費融資方案摘要')+'_'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     document.body.classList.add('rpmode');
     window.scrollTo(0,0);
   };
-  // 列印前先捲回頁頂，避免頁面捲動位置令 PDF 頂部被裁去
   $('rpPrint').onclick = ()=>{ window.scrollTo(0,0); setTimeout(()=> window.print(), 200); };
   $('rpBack').onclick = ()=>{
     document.body.classList.remove('rpmode');
-    if(oldTitle){ document.title = oldTitle; oldTitle = null; }
+    document.title = loc(BASE_TITLE);
     $('exportPdf').scrollIntoView({block:'center'});
   };
 
   /* ---------- 事件 ---------- */
+  $('langSeg').addEventListener('click', e=>{ const t = e.target.closest('button'); if(t && t.dataset.lang !== lang) setLang(t.dataset.lang); });
   $('scSeg').addEventListener('click', e=>{ const t = e.target.closest('button'); if(t){ scenario=+t.dataset.i; update(); }});
   $('curSeg').addEventListener('click', e=>{
     const c = e.target.dataset.cur; if(!c || c===cur) return;
-    const fx = num($('fx').value)||7.8, k = c==='USD' ? 1/fx : fx;   // 手動切換貨幣時自動換算金額
+    const fx = num($('fx').value)||7.8, k = c==='USD' ? 1/fx : fx;
     document.querySelectorAll('input.money').forEach(i=>{ const n=num(i.value); if(n!=null) i.value=fmtIn(n*k); });
     setCur(c);
     update();
@@ -821,6 +872,9 @@
 
   for(let i=0;i<INIT_ROWS;i++) addRow();
   update();
+  let saved = 'tc';
+  try{ saved = localStorage.getItem('pf_lang') || 'tc'; }catch(e){}
+  setLang(saved);
   </script>
   </body>
   </html>
